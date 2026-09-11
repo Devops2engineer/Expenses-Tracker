@@ -1,0 +1,149 @@
+/* Custom Font & Base */
+body { 
+    font-family: Bahnschrift, sans-serif; 
+}
+
+/* Navigation Styles */
+nav {
+    background-color: rgb(239, 239, 239);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 80px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 40px;
+    box-sizing: border-box;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+
+    border-radius: 0 0 20px 20px;
+    border: 2px solid rgb(249, 249, 249);
+}
+
+
+/* LOGO */
+
+.logo img {
+    width: 180px;
+    height: auto;
+    display: block;
+}
+
+
+/* MENU */
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    list-style: none;
+    margin: 0 0 0 15px;
+    padding: 0;
+}
+
+.menu a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+
+    padding: 10px 14px;
+    border-radius: 5px;
+
+    transition: background-color 0.2s ease,
+                color 0.2s ease;
+}
+
+.menu a:hover {
+    background-color: rgb(216, 237, 249);
+    color: rgb(0, 0, 0);
+}
+
+.menu a.active {
+    background-color: rgb(216, 237, 249);
+    color: rgb(0, 0, 0);
+}
+
+
+/* Footer Styling */
+.ft {
+    background-image: url('https://teamnogueiradubai.com/wp-content/themes/gymat/assets/img/footer-1-bg.png');
+    background-size: cover;
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    color: white;
+    margin-top: 160px;
+}
+
+/* Account Section */
+
+.account {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* User icon */
+
+.account-icon {
+    width: 30px;
+    height: 30px;
+
+    border: 2px solid #111;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: white;
+
+    transition: background-color 0.2s ease,
+                transform 0.2s ease;
+}
+
+
+/* User icon hover */
+
+.account-icon:hover {
+    background-color: #e5f4fc;
+    transform: scale(1.05);
+}
+
+
+/* Account name */
+
+.account-name {
+    height: 30px;
+    padding: 0 10px;
+
+    display: flex;
+    align-items: center;
+
+    border: 1px solid #222;
+    background-color: white;
+
+    font-size: 13px;
+    color: #222;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease,
+                border-color 0.2s ease;
+}
+
+
+/* Account hover */
+
+.account-name:hover {
+    background-color: #e5f4fc;
+    border-color: #111;
+}
