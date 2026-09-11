@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<html>
+
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdn.tailwindcss.com"></script>
+        <title>SaveFlow - Savings Tracker</title>
         <link rel="stylesheet" href="style.css">
-        <title>Home ● Expense Tracker App
-        </title>
     </head>
-    
     <body class="bg-cover bg-center bg-fixed bg-[url('https://images.unsplash.com/photo-1549474753-43a7593c6f09?q=80&w=2940&auto=format&fit=crop')] text-gray-800">
         <!-- Navigation -->
     <nav>
@@ -33,6 +30,524 @@
             Account Name
             </div>
         </div>
+        <label for="currencySelect">Currency:</label>
+        <select id="currencySelect">
+            <option value="GBP">GBP (£)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="AED">AED (د.إ)</option>
+            <option value="CAD">CAD ($)</option>
+            <option value="AUD">AUD ($)</option>
+            <option value="INR">INR (₹)</option>
+            <option value="NGN">NGN (₦)</option>
+            <option value="JPY">JPY (¥)</option>
+        </select>
+    </div>
     </nav>
+    <!-- Main Content -->
+
+    <main class="dashboard">
+
+        <!-- Welcome Section -->
+
+        <section class="welcome">
+
+            <div>
+                <h1>Welcome back!</h1>
+
+                <p>
+                    Track your savings goals and monitor your progress.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- Statistics -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">£</div>
+
+                <div>
+                    <p>Total Savings</p>
+                    <h2 id="totalSavings">£7,900</h2>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">●</div>
+
+                <div>
+                    <p>Active Goals</p>
+                    <h2 id="activeGoals">3</h2>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">✓</div>
+
+                <div>
+                    <p>Completed Goals</p>
+                    <h2 id="completedGoals">1</h2>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Monthly Deposits -->
+
+        <section class="chart-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Monthly Deposits</h2>
+
+                    <p>
+                        Your savings deposits throughout the year.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="chart">
+
+                <div class="chart-y-axis">
+                    <span>£2,000</span>
+                    <span>£1,500</span>
+                    <span>£1,000</span>
+                    <span>£500</span>
+                    <span>£0</span>
+                </div>
+
+
+                <div class="chart-area">
+
+                    <div class="bars">
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 50%;"></div>
+                            <span>Jan</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 82.5%;"></div>
+                            <span>Feb</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 72.5%;"></div>
+                            <span>Mar</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 92.5%;"></div>
+                            <span>Apr</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 97.5%;"></div>
+                            <span>May</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 0%;"></div>
+                            <span>Jun</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 0%;"></div>
+                            <span>Jul</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 0%;"></div>
+                            <span>Aug</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 0%;"></div>
+                            <span>Sep</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 0%;"></div>
+                            <span>Oct</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 0%;"></div>
+                            <span>Nov</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <div class="bar" style="height: 0%;"></div>
+                            <span>Dec</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Savings Section -->
+
+        <section class="savings-section">
+
+            <div class="savings-header">
+
+                <div>
+                    <h2>My Savings</h2>
+
+                    <p>
+                        Manage your savings goals and track your progress.
+                    </p>
+                </div>
+
+                <button class="create-goal-btn">
+                    + Create Goal
+                </button>
+
+            </div>
+
+
+            <!-- Filters -->
+
+            <div class="controls">
+
+                <div class="filters">
+
+                    <button data-filter="all" class="active">All</button>
+                    <button data-filter="active">Active</button>
+                    <button data-filter="completed">Completed</button>
+
+                </div>
+
+
+                <div class="sort">
+
+                    <label for="sortGoals">
+                        Sort by:
+                    </label>
+
+                    <select id="sortGoals">
+                        <option value="deadline">Deadline</option>
+                        <option value="progress">Progress</option>
+                        <option value="amount">Amount saved</option>
+                        <option value="alphabetical">Alphabetical</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- Goal Cards -->
+
+            <div class="goal-grid" id="goalGrid">
+
+
+                <!-- Emergency Fund -->
+
+                <article class="goal-card">
+
+                    <div class="goal-card-header">
+
+                        <h3>Emergency Fund</h3>
+
+                        <button class="more-btn">
+                            ⋮
+                        </button>
+
+                    </div>
+
+
+                    <div class="goal-amount">
+
+                        <strong>£3,400</strong>
+
+                        <span>of £5,000</span>
+
+                    </div>
+
+
+                    <div class="progress-container">
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="progress"
+                                style="width: 68%;">
+                            </div>
+
+                        </div>
+
+                        <span class="progress-percent">
+                            68%
+                        </span>
+
+                    </div>
+
+
+                    <div class="goal-footer">
+
+                        <div>
+                            <span class="label">
+                                Deadline
+                            </span>
+
+                            <strong>
+                                31 Dec 2026
+                            </strong>
+                        </div>
+
+                        <button class="view-btn">
+                            View Details
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <!-- New Laptop -->
+
+                <article class="goal-card">
+
+                    <div class="goal-card-header">
+
+                        <h3>New Laptop</h3>
+
+                        <button class="more-btn">
+                            ⋮
+                        </button>
+
+                    </div>
+
+
+                    <div class="goal-amount">
+
+                        <strong>£1,700</strong>
+
+                        <span>of £3,000</span>
+
+                    </div>
+
+
+                    <div class="progress-container">
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="progress"
+                                style="width: 56.67%;">
+                            </div>
+
+                        </div>
+
+                        <span class="progress-percent">
+                            57%
+                        </span>
+
+                    </div>
+
+
+                    <div class="goal-footer">
+
+                        <div>
+                            <span class="label">
+                                Deadline
+                            </span>
+
+                            <strong>
+                                30 Nov 2026
+                            </strong>
+                        </div>
+
+                        <button class="view-btn">
+                            View Details
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <!-- Holiday Fund -->
+
+                <article class="goal-card completed">
+
+                    <div class="completed-badge">
+                        Completed
+                    </div>
+
+                    <div class="goal-card-header">
+
+                        <h3>Holiday Fund</h3>
+
+                        <button class="more-btn">
+                            ⋮
+                        </button>
+
+                    </div>
+
+
+                    <div class="goal-amount">
+
+                        <strong>£2,500</strong>
+
+                        <span>of £2,500</span>
+
+                    </div>
+
+
+                    <div class="progress-container">
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="progress"
+                                style="width: 100%;">
+                            </div>
+
+                        </div>
+
+                        <span class="progress-percent">
+                            100%
+                        </span>
+
+                    </div>
+
+
+                    <div class="goal-footer">
+
+                        <div>
+                            <span class="label">
+                                Completed
+                            </span>
+
+                            <strong>
+                                Goal reached!
+                            </strong>
+                        </div>
+
+                        <button class="view-btn">
+                            View Details
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <!-- Gaming Setup -->
+
+                <article class="goal-card">
+
+                    <div class="goal-card-header">
+
+                        <h3>Gaming Setup</h3>
+
+                        <button class="more-btn">
+                            ⋮
+                        </button>
+
+                    </div>
+
+
+                    <div class="goal-amount">
+
+                        <strong>£300</strong>
+
+                        <span>of £2,000</span>
+
+                    </div>
+
+
+                    <div class="progress-container">
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="progress"
+                                style="width: 15%;">
+                            </div>
+
+                        </div>
+
+                        <span class="progress-percent">
+                            15%
+                        </span>
+
+                    </div>
+
+
+                    <div class="goal-footer">
+
+                        <div>
+                            <span class="label">
+                                Deadline
+                            </span>
+
+                            <strong>
+                                No deadline
+                            </strong>
+                        </div>
+
+                        <button class="view-btn">
+                            View Details
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
+
+            <!-- Empty State -->
+
+            <div class="empty-state" id="emptyState">
+
+                <div class="empty-icon">
+                    +
+                </div>
+
+                <h3>No savings goals yet</h3>
+
+                <p>
+                    Create your first savings goal to start
+                    tracking your progress.
+                </p>
+
+                <button class="create-goal-btn">
+                    Create Your First Goal
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/script.js"></script>
     </body>
 </html>
