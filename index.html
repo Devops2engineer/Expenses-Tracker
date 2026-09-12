@@ -8,20 +8,36 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body class="bg-cover bg-center bg-fixed bg-[url('https://images.unsplash.com/photo-1549474753-43a7593c6f09?q=80&w=2940&auto=format&fit=crop')] text-gray-800">
-        <!-- Navigation -->
+
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loadingScreen">
+
+        <div class="loading-content">
+
+            <div class="loading-spinner"></div>
+
+            <h2>SaveFlow</h2>
+
+            <p>Loading your savings dashboard...</p>
+
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
     <nav>
         <div class="logo">
-            <a href="https://teamnogueiradubai.com/">
+            <a href="index.html">
                 <img src="mainlogobgremoved.png" alt="SaveFlow">
             </a>
         </div>
         <ul class="menu">
-            <li><a href="https://teamnogueiradubai.com/about/">Home</a></li>
-            <li><a href="https://teamnogueiradubai.com/judo/">Transactions</a></li>
-            <li><a href="https://teamnogueiradubai.com/kid/">Savings</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Transactions</a></li>
+            <li><a href="#">Savings</a></li>
         </ul>
         <div class="account">
-
+            <a href="#" class="account-link">
             <div class="account-icon">
             👤
             </div>
@@ -29,6 +45,7 @@
             <div class="account-name">
             Account Name
             </div>
+            </a>
         </div>
         <label for="currencySelect">Currency:</label>
         <select id="currencySelect">

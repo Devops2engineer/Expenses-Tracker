@@ -573,13 +573,16 @@ function escapeHTML(value) {
     return element.innerHTML;
 }
 
-// Start SaveFlow
-document.addEventListener("DOMContentLoaded", () => {
-    setupCurrencySelector();
-    setupFilters();
-    setupSorting();
-    loadGoals();
-});
+// Hide loading screen
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById("loadingScreen");
+
+    if (!loadingScreen) {
+        return;
+    }
+
+    loadingScreen.classList.add("hidden");
+}
 
 // Start SaveFlow
 document.addEventListener("DOMContentLoaded", () => {
@@ -587,4 +590,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setupFilters();
     setupSorting();
     loadGoals();
+
+    // Add a short loading delay
+    setTimeout(() => {
+        hideLoadingScreen();
+    }, 1200);
 });
