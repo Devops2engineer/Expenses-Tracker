@@ -87,9 +87,14 @@ nav {
     align-items: center;
     gap: 15px;
 }
-
+.account-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+}
 .account-name {
     margin-right: 20px;
+    margin-left: 10px;
 }
 
 .account label {
@@ -1162,4 +1167,79 @@ nav {
         gap: 15px;
     }
 
+}
+/* Loading screen */
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgb(239, 239, 239);
+
+    opacity: 1;
+    visibility: visible;
+
+    transition: opacity 0.5s ease,
+                visibility 0.5s ease;
+}
+
+/* Hide loading screen */
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Loading content */
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    width: 55px;
+    height: 55px;
+
+    border: 5px solid rgb(216, 237, 249);
+    border-top: 5px solid rgb(30, 100, 160);
+
+    border-radius: 50%;
+
+    animation: spin 1s linear infinite;
+
+    margin-bottom: 20px;
+}
+
+/* Loading title */
+.loading-content h2 {
+    margin: 0 0 8px;
+
+    color: rgb(0, 0, 0);
+    font-size: 32px;
+}
+
+/* Loading message */
+.loading-content p {
+    margin: 0;
+
+    color: rgb(80, 80, 80);
+    font-size: 16px;
+}
+
+/* Spinner animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
