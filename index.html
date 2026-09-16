@@ -1,10 +1,42 @@
 <!DOCTYPE html>
 <html>
-    <head>
+    <head> 
+        <link rel="stylesheet" href="style.css">
 <title>Home ● Expense Tracker App  
 </title>                         
     </head>
+    <script src="script.js"></script>
     <body>
+        <!-- Section for adding a new transaction -->
+        <section id="add-transaction">
+            <h2>Add New Transaction</h2>
+            <form id="transaction-form">
+                <!--Amount Input-->
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" step="0.01" required>
+
+                <!-- Optional note input-->
+                 <label for="note">Note:</label>
+                 <input type="text" id="note" name="note">
+
+                 <!--Date Input-->
+                 <label for="date">Date:</label>
+                 <input type="date" id="date" name="date" required>
+
+                 <!--Submit Button-->
+                 <button type="submit">Add Transaction</button>
+            </form>
+            
+            <!--Placeholder for validation error messages-->
+            <p id="form-error" class="error-message"></p>
+         </section>
+
+         <!-- Section showing the list of all transactions -->
+         <section id="transaction-list">
+            <h2>Transactions</h2>
+            <ul id="transactions"></ul> 
+        </section>
         
+            
     </body>
 </html>
