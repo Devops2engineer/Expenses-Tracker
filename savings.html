@@ -1,16 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SaveFlow - Savings Tracker</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body class="bg-cover bg-center bg-fixed bg-[url('https://images.unsplash.com/photo-1549474753-43a7593c6f09?q=80&w=2940&auto=format&fit=crop')] text-gray-800">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SaveFlow - Savings</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body class="bg-cover bg-center bg-fixed bg-[url('https://images.unsplash.com/photo-1549474753-43a7593c6f09?q=80&w=2940&auto=format&fit=crop')] text-gray-800">
+
 
     <!-- Loading screen -->
-    <div class="loading-screen" id="loadingScreen">
+
+    <div
+        class="loading-screen"
+        id="loadingScreen"
+    >
 
         <div class="loading-content">
 
@@ -18,391 +36,1905 @@
 
             <h2>SaveFlow</h2>
 
-            <p>Loading your savings dashboard...</p>
+            <p>
+                Loading your savings...
+            </p>
 
         </div>
 
     </div>
+
 
     <!-- Navigation -->
-    <nav>
-        <div class="logo">
-            <a href="index.html">
-                <img src="Assets/mainlogobgremoved.png" alt="SaveFlow">
-            </a>
-        </div>
-        <ul class="menu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="#">Transactions</a></li>
-            <li><a href="#">Savings</a></li>
-        </ul>
-        <div class="account">
-            <a href="#" class="account-link">
-            <div class="account-icon">
-            👤
-            </div>
 
-            <div class="account-name">
-            Account Name
-            </div>
+    <nav>
+
+        <!-- Logo -->
+
+        <div class="logo">
+
+            <a href="index.html">
+
+                <img
+                    src="Assests/mainlogobgremoved.png"
+                    alt="SaveFlow"
+                >
+
             </a>
+
         </div>
-        <label for="currencySelect">Currency:</label>
+
+
+        <!-- Navigation menu -->
+
+        <ul class="menu">
+
+            <li>
+
+                <a href="index.html">
+
+                    <i
+                        data-lucide="house"
+                        aria-hidden="true"
+                    ></i>
+
+                    <span>
+                        Home
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="#">
+
+                    <i
+                        data-lucide="arrow-left-right"
+                        aria-hidden="true"
+                    ></i>
+
+                    <span>
+                        Transactions
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="#"
+                    class="active"
+                >
+
+                    <i
+                        data-lucide="piggy-bank"
+                        aria-hidden="true"
+                    ></i>
+
+                    <span>
+                        Savings
+                    </span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+
+        <!-- Account -->
+
+        <div class="account">
+
+            <a
+                href="#"
+                class="account-link"
+            >
+
+                <div class="account-icon">
+
+                    <i
+                        data-lucide="user-round"
+                        aria-hidden="true"
+                    ></i>
+
+                </div>
+
+
+                <div class="account-name">
+                    Account Name
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- Currency -->
+
+        <label for="currencySelect">
+            Currency:
+        </label>
+
+
         <select id="currencySelect">
-            <option value="GBP">GBP (£)</option>
-            <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
-            <option value="AED">AED (د.إ)</option>
-            <option value="CAD">CAD ($)</option>
-            <option value="AUD">AUD ($)</option>
-            <option value="INR">INR (₹)</option>
-            <option value="NGN">NGN (₦)</option>
-            <option value="JPY">JPY (¥)</option>
+
+            <option value="GBP">
+                GBP (£)
+            </option>
+
+            <option value="USD">
+                USD ($)
+            </option>
+
+            <option value="EUR">
+                EUR (€)
+            </option>
+
+            <option value="AED">
+                AED (د.إ)
+            </option>
+
+            <option value="CAD">
+                CAD ($)
+            </option>
+
+            <option value="AUD">
+                AUD ($)
+            </option>
+
+            <option value="INR">
+                INR (₹)
+            </option>
+
+            <option value="NGN">
+                NGN (₦)
+            </option>
+
+            <option value="JPY">
+                JPY (¥)
+            </option>
+
         </select>
-    </div>
+
     </nav>
 
-    <!-- Main Content -->
+
+    <!-- Main content -->
 
     <main class="dashboard">
 
-        <section class="savings-section">
 
-            <div class="savings-header">
+        <!-- Savings page -->
+
+        <section class="savings-page">
+
+
+            <!-- Page header -->
+
+            <div class="savings-page-header">
 
                 <div>
-                    <h2>My Savings</h2>
+
+                    <span class="page-label">
+                        YOUR SAVINGS
+                    </span>
+
+
+                    <h1>
+                        Keep building your future.
+                    </h1>
+
 
                     <p>
-                        Manage your savings goals and track your progress.
+                        Manage your savings goals, review your progress,
+                        and make your next deposit.
                     </p>
-                </div>
-                
-                <div class="header-actions">
-                    <button class="create-goal-btn"> 
-                        + Create Goal 
-                    </button>
-                    <button id="exportGoalsBtn" class="create-goal-btn" type="button">
-                        Export JSON
-                    </button>
-                </div>
-
-            </div>
-
-
-            <!-- Filters -->
-
-            <div class="controls">
-
-                <div class="filters">
-
-                    <button data-filter="all" class="active">All</button>
-                    <button data-filter="active">Active</button>
-                    <button data-filter="completed">Completed</button>
 
                 </div>
 
 
-                <div class="sort">
+                <button
+                    class="create-goal-btn"
+                    id="createGoalBtn"
+                    type="button"
+                >
+
+                    <i
+                        data-lucide="plus"
+                        aria-hidden="true"
+                    ></i>
+
+                    Create Goal
 
-                    <label for="sortGoals">
-                        Sort by:
-                    </label>
-
-                    <select id="sortGoals">
-                        <option value="deadline">Deadline</option>
-                        <option value="progress">Progress</option>
-                        <option value="amount">Amount saved</option>
-                        <option value="alphabetical">Alphabetical</option>
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <!-- Goal Cards -->
-
-            <div class="goal-grid" id="goalGrid">
-
-
-                <!-- Emergency Fund -->
-
-                <article class="goal-card">
-
-                    <div class="goal-card-header">
-
-                        <h3>Emergency Fund</h3>
-
-                        <button class="more-btn">
-                            ⋮
-                        </button>
-
-                    </div>
-
-
-                    <div class="goal-amount">
-
-                        <strong>£3,400</strong>
-
-                        <span>of £5,000</span>
-
-                    </div>
-
-
-                    <div class="progress-container">
-
-                        <div class="progress-bar">
-
-                            <div
-                                class="progress"
-                                style="width: 68%;">
-                            </div>
-
-                        </div>
-
-                        <span class="progress-percent">
-                            68%
-                        </span>
-
-                    </div>
-
-
-                    <div class="goal-footer">
-
-                        <div>
-                            <span class="label">
-                                Deadline
-                            </span>
-
-                            <strong>
-                                31 Dec 2026
-                            </strong>
-                        </div>
-
-                        <button class="view-btn">
-                            View Details
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <!-- New Laptop -->
-
-                <article class="goal-card">
-
-                    <div class="goal-card-header">
-
-                        <h3>New Laptop</h3>
-
-                        <button class="more-btn">
-                            ⋮
-                        </button>
-
-                    </div>
-
-
-                    <div class="goal-amount">
-
-                        <strong>£1,700</strong>
-
-                        <span>of £3,000</span>
-
-                    </div>
-
-
-                    <div class="progress-container">
-
-                        <div class="progress-bar">
-
-                            <div
-                                class="progress"
-                                style="width: 56.67%;">
-                            </div>
-
-                        </div>
-
-                        <span class="progress-percent">
-                            57%
-                        </span>
-
-                    </div>
-
-
-                    <div class="goal-footer">
-
-                        <div>
-                            <span class="label">
-                                Deadline
-                            </span>
-
-                            <strong>
-                                30 Nov 2026
-                            </strong>
-                        </div>
-
-                        <button class="view-btn">
-                            View Details
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <!-- Holiday Fund -->
-
-                <article class="goal-card completed">
-
-                    <div class="completed-badge">
-                        Completed
-                    </div>
-
-                    <div class="goal-card-header">
-
-                        <h3>Holiday Fund</h3>
-
-                        <button class="more-btn">
-                            ⋮
-                        </button>
-
-                    </div>
-
-
-                    <div class="goal-amount">
-
-                        <strong>£2,500</strong>
-
-                        <span>of £2,500</span>
-
-                    </div>
-
-
-                    <div class="progress-container">
-
-                        <div class="progress-bar">
-
-                            <div
-                                class="progress"
-                                style="width: 100%;">
-                            </div>
-
-                        </div>
-
-                        <span class="progress-percent">
-                            100%
-                        </span>
-
-                    </div>
-
-
-                    <div class="goal-footer">
-
-                        <div>
-                            <span class="label">
-                                Completed
-                            </span>
-
-                            <strong>
-                                Goal reached!
-                            </strong>
-                        </div>
-
-                        <button class="view-btn">
-                            View Details
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <!-- Gaming Setup -->
-
-                <article class="goal-card">
-
-                    <div class="goal-card-header">
-
-                        <h3>Gaming Setup</h3>
-
-                        <button class="more-btn">
-                            ⋮
-                        </button>
-
-                    </div>
-
-
-                    <div class="goal-amount">
-
-                        <strong>£300</strong>
-
-                        <span>of £2,000</span>
-
-                    </div>
-
-
-                    <div class="progress-container">
-
-                        <div class="progress-bar">
-
-                            <div
-                                class="progress"
-                                style="width: 15%;">
-                            </div>
-
-                        </div>
-
-                        <span class="progress-percent">
-                            15%
-                        </span>
-
-                    </div>
-
-
-                    <div class="goal-footer">
-
-                        <div>
-                            <span class="label">
-                                Deadline
-                            </span>
-
-                            <strong>
-                                No deadline
-                            </strong>
-                        </div>
-
-                        <button class="view-btn">
-                            View Details
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-            </div>
-
-
-            <!-- Empty State -->
-
-            <div class="empty-state" id="emptyState">
-
-                <div class="empty-icon">
-                    +
-                </div>
-
-                <h3>No savings goals yet</h3>
-
-                <p>
-                    Create your first savings goal to start
-                    tracking your progress.
-                </p>
-
-                <button class="create-goal-btn">
-                    Create Your First Goal
                 </button>
+
+            </div>
+
+
+            <!-- Two-column savings layout -->
+
+            <div class="savings-layout">
+
+
+                <!-- Main 70% area -->
+
+                <section class="savings-main">
+
+
+                    <div class="section-header">
+
+                        <div>
+
+                            <h2>
+                                My Savings Goals
+                            </h2>
+
+                            <p>
+                                Select a goal to view its details.
+                            </p>
+
+                        </div>
+
+
+                        <span
+                            class="goal-count"
+                            id="goalCount"
+                        >
+                            4 Goals
+                        </span>
+
+                    </div>
+
+
+                    <!-- Goal list -->
+
+                    <div
+                        class="savings-goal-list"
+                        id="goalList"
+                    >
+
+
+                        <!-- Emergency Fund -->
+
+                        <article
+                            class="savings-goal-card priority-goal"
+                            data-goal-id="1"
+                        >
+
+
+                            <!-- Collapsed section -->
+
+                            <button
+                                class="goal-toggle"
+                                type="button"
+                                aria-expanded="false"
+                                aria-controls="goal-details-1"
+                            >
+
+
+                                <div class="goal-icon">
+
+                                    <i
+                                        data-lucide="shield-check"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </div>
+
+
+                                <div class="goal-summary">
+
+                                    <div class="goal-title-row">
+
+                                        <h3>
+                                            Emergency Fund
+                                        </h3>
+
+
+                                        <span class="priority-badge">
+
+                                            <i
+                                                data-lucide="star"
+                                                aria-hidden="true"
+                                            ></i>
+
+                                            Priority
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <p>
+                                        £3,400 saved of £5,000
+                                    </p>
+
+
+                                    <div class="goal-mini-progress">
+
+                                        <div class="goal-mini-progress-bar">
+
+                                            <div
+                                                class="goal-mini-progress-fill"
+                                                style="width: 68%;"
+                                            ></div>
+
+                                        </div>
+
+
+                                        <span>
+                                            68%
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="goal-arrow">
+
+                                    <i
+                                        data-lucide="chevron-down"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </span>
+
+                            </button>
+
+
+                            <!-- Expanded details -->
+
+                            <div
+                                class="goal-details"
+                                id="goal-details-1"
+                                hidden
+                            >
+
+
+                                <!-- Main amounts -->
+
+                                <div class="goal-details-top">
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Amount saved
+                                        </span>
+
+                                        <strong>
+                                            £3,400
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Target amount
+                                        </span>
+
+                                        <strong>
+                                            £5,000
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Remaining
+                                        </span>
+
+                                        <strong>
+                                            £1,600
+                                        </strong>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- Progress -->
+
+                                <div class="full-progress-section">
+
+                                    <div class="detail-heading-row">
+
+                                        <h4>
+                                            Goal Progress
+                                        </h4>
+
+                                        <strong>
+                                            68%
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="full-progress-bar">
+
+                                        <div
+                                            class="full-progress-fill"
+                                            style="width: 68%;"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Goal information -->
+
+                                <div class="goal-information">
+
+
+                                    <div>
+
+                                        <span>
+                                            Deadline
+                                        </span>
+
+                                        <strong>
+                                            31 Dec 2026
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Total deposits
+                                        </span>
+
+                                        <strong>
+                                            5
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Highest deposit
+                                        </span>
+
+                                        <strong>
+                                            £850
+                                        </strong>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- Deposit history -->
+
+                                <div class="deposit-history">
+
+
+                                    <div class="detail-heading-row">
+
+                                        <h4>
+                                            Deposit History
+                                        </h4>
+
+                                        <span>
+                                            5 deposits
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="deposit-list">
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    20 May 2026
+                                                </strong>
+
+                                                <span>
+                                                    Monthly deposit
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £700
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    18 Apr 2026
+                                                </strong>
+
+                                                <span>
+                                                    Bonus saving
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £850
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    12 Mar 2026
+                                                </strong>
+
+                                                <span>
+                                                    Monthly deposit
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £600
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    15 Feb 2026
+                                                </strong>
+
+                                                <span>
+                                                    Monthly deposit
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £750
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    10 Jan 2026
+                                                </strong>
+
+                                                <span>
+                                                    January saving
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £500
+                                            </strong>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Actions -->
+
+                                <div class="goal-actions">
+
+                                    <button
+                                        class="deposit-now-btn"
+                                        type="button"
+                                        data-goal-id="1"
+                                    >
+
+                                        <i
+                                            data-lucide="wallet"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Deposit Now
+
+                                    </button>
+
+
+                                    <button
+                                        class="edit-goal-btn"
+                                        type="button"
+                                        data-goal-id="1"
+                                    >
+
+                                        <i
+                                            data-lucide="pencil"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Edit Goal
+
+                                    </button>
+
+                                </div>
+
+
+                                <!-- Encouragement -->
+
+                                <p class="goal-message">
+
+                                    You're over halfway there.
+                                    Keep building your safety net!
+
+                                </p>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- New Laptop -->
+
+                        <article
+                            class="savings-goal-card"
+                            data-goal-id="2"
+                        >
+
+
+                            <button
+                                class="goal-toggle"
+                                type="button"
+                                aria-expanded="false"
+                                aria-controls="goal-details-2"
+                            >
+
+                                <div class="goal-icon">
+
+                                    <i
+                                        data-lucide="laptop"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </div>
+
+
+                                <div class="goal-summary">
+
+                                    <div class="goal-title-row">
+
+                                        <h3>
+                                            New Laptop
+                                        </h3>
+
+                                    </div>
+
+
+                                    <p>
+                                        £1,700 saved of £3,000
+                                    </p>
+
+
+                                    <div class="goal-mini-progress">
+
+                                        <div class="goal-mini-progress-bar">
+
+                                            <div
+                                                class="goal-mini-progress-fill"
+                                                style="width: 57%;"
+                                            ></div>
+
+                                        </div>
+
+
+                                        <span>
+                                            57%
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="goal-arrow">
+
+                                    <i
+                                        data-lucide="chevron-down"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </span>
+
+                            </button>
+
+
+                            <div
+                                class="goal-details"
+                                id="goal-details-2"
+                                hidden
+                            >
+
+
+                                <div class="goal-details-top">
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Amount saved
+                                        </span>
+
+                                        <strong>
+                                            £1,700
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Target amount
+                                        </span>
+
+                                        <strong>
+                                            £3,000
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Remaining
+                                        </span>
+
+                                        <strong>
+                                            £1,300
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="full-progress-section">
+
+                                    <div class="detail-heading-row">
+
+                                        <h4>
+                                            Goal Progress
+                                        </h4>
+
+                                        <strong>
+                                            57%
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="full-progress-bar">
+
+                                        <div
+                                            class="full-progress-fill"
+                                            style="width: 57%;"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="goal-information">
+
+
+                                    <div>
+
+                                        <span>
+                                            Deadline
+                                        </span>
+
+                                        <strong>
+                                            30 Nov 2026
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Total deposits
+                                        </span>
+
+                                        <strong>
+                                            4
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Highest deposit
+                                        </span>
+
+                                        <strong>
+                                            £500
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="deposit-history">
+
+                                    <div class="detail-heading-row">
+
+                                        <h4>
+                                            Deposit History
+                                        </h4>
+
+                                        <span>
+                                            4 deposits
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="deposit-list">
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    14 May 2026
+                                                </strong>
+
+                                                <span>
+                                                    Monthly saving
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £450
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    10 Apr 2026
+                                                </strong>
+
+                                                <span>
+                                                    Monthly saving
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £500
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    8 Mar 2026
+                                                </strong>
+
+                                                <span>
+                                                    Monthly saving
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £350
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    5 Feb 2026
+                                                </strong>
+
+                                                <span>
+                                                    Initial deposit
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £400
+                                            </strong>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="goal-actions">
+
+                                    <button
+                                        class="deposit-now-btn"
+                                        type="button"
+                                        data-goal-id="2"
+                                    >
+
+                                        <i
+                                            data-lucide="wallet"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Deposit Now
+
+                                    </button>
+
+
+                                    <button
+                                        class="edit-goal-btn"
+                                        type="button"
+                                        data-goal-id="2"
+                                    >
+
+                                        <i
+                                            data-lucide="pencil"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Edit Goal
+
+                                    </button>
+
+                                </div>
+
+
+                                <p class="goal-message">
+
+                                    Every deposit brings you closer
+                                    to your new laptop.
+
+                                </p>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- Holiday Fund -->
+
+                        <article
+                            class="savings-goal-card completed-goal"
+                            data-goal-id="3"
+                        >
+
+
+                            <button
+                                class="goal-toggle"
+                                type="button"
+                                aria-expanded="false"
+                                aria-controls="goal-details-3"
+                            >
+
+                                <div class="goal-icon">
+
+                                    <i
+                                        data-lucide="plane"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </div>
+
+
+                                <div class="goal-summary">
+
+                                    <div class="goal-title-row">
+
+                                        <h3>
+                                            Holiday Fund
+                                        </h3>
+
+
+                                        <span class="completed-badge">
+
+                                            <i
+                                                data-lucide="circle-check"
+                                                aria-hidden="true"
+                                            ></i>
+
+                                            Completed
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <p>
+                                        £2,500 saved of £2,500
+                                    </p>
+
+
+                                    <div class="goal-mini-progress">
+
+                                        <div class="goal-mini-progress-bar">
+
+                                            <div
+                                                class="goal-mini-progress-fill completed-fill"
+                                                style="width: 100%;"
+                                            ></div>
+
+                                        </div>
+
+
+                                        <span>
+                                            100%
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="goal-arrow">
+
+                                    <i
+                                        data-lucide="chevron-down"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </span>
+
+                            </button>
+
+
+                            <div
+                                class="goal-details"
+                                id="goal-details-3"
+                                hidden
+                            >
+
+
+                                <div class="goal-details-top">
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Amount saved
+                                        </span>
+
+                                        <strong>
+                                            £2,500
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Target amount
+                                        </span>
+
+                                        <strong>
+                                            £2,500
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Remaining
+                                        </span>
+
+                                        <strong>
+                                            £0
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="full-progress-section">
+
+                                    <div class="detail-heading-row">
+
+                                        <h4>
+                                            Goal Progress
+                                        </h4>
+
+                                        <strong>
+                                            100%
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="full-progress-bar">
+
+                                        <div
+                                            class="full-progress-fill completed-fill"
+                                            style="width: 100%;"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="goal-information">
+
+
+                                    <div>
+
+                                        <span>
+                                            Completed
+                                        </span>
+
+                                        <strong>
+                                            25 May 2026
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Total deposits
+                                        </span>
+
+                                        <strong>
+                                            5
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Highest deposit
+                                        </span>
+
+                                        <strong>
+                                            £500
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="deposit-history">
+
+                                    <div class="detail-heading-row">
+
+                                        <h4>
+                                            Deposit History
+                                        </h4>
+
+                                        <span>
+                                            5 deposits
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="deposit-list">
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    25 May 2026
+                                                </strong>
+
+                                                <span>
+                                                    Final deposit
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £500
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    25 Apr 2026
+                                                </strong>
+
+                                                <span>
+                                                    Trip fund
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £500
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    25 Mar 2026
+                                                </strong>
+
+                                                <span>
+                                                    Trip fund
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £500
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    25 Feb 2026
+                                                </strong>
+
+                                                <span>
+                                                    Trip fund
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £500
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    25 Jan 2026
+                                                </strong>
+
+                                                <span>
+                                                    Trip fund
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £500
+                                            </strong>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="goal-actions">
+
+                                    <button
+                                        class="deposit-now-btn"
+                                        type="button"
+                                        data-goal-id="3"
+                                    >
+
+                                        <i
+                                            data-lucide="wallet"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Deposit More
+
+                                    </button>
+
+
+                                    <button
+                                        class="edit-goal-btn"
+                                        type="button"
+                                        data-goal-id="3"
+                                    >
+
+                                        <i
+                                            data-lucide="pencil"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Edit Goal
+
+                                    </button>
+
+                                </div>
+
+
+                                <p class="goal-message">
+
+                                    You did it! Your holiday goal is complete.
+
+                                </p>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- Gaming Setup -->
+
+                        <article
+                            class="savings-goal-card"
+                            data-goal-id="4"
+                        >
+
+
+                            <button
+                                class="goal-toggle"
+                                type="button"
+                                aria-expanded="false"
+                                aria-controls="goal-details-4"
+                            >
+
+                                <div class="goal-icon">
+
+                                    <i
+                                        data-lucide="gamepad-2"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </div>
+
+
+                                <div class="goal-summary">
+
+                                    <div class="goal-title-row">
+
+                                        <h3>
+                                            Gaming Setup
+                                        </h3>
+
+                                    </div>
+
+
+                                    <p>
+                                        £300 saved of £2,000
+                                    </p>
+
+
+                                    <div class="goal-mini-progress">
+
+                                        <div class="goal-mini-progress-bar">
+
+                                            <div
+                                                class="goal-mini-progress-fill"
+                                                style="width: 15%;"
+                                            ></div>
+
+                                        </div>
+
+
+                                        <span>
+                                            15%
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="goal-arrow">
+
+                                    <i
+                                        data-lucide="chevron-down"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                </span>
+
+                            </button>
+
+
+                            <div
+                                class="goal-details"
+                                id="goal-details-4"
+                                hidden
+                            >
+
+
+                                <div class="goal-details-top">
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Amount saved
+                                        </span>
+
+                                        <strong>
+                                            £300
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Target amount
+                                        </span>
+
+                                        <strong>
+                                            £2,000
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="detail-card">
+
+                                        <span>
+                                            Remaining
+                                        </span>
+
+                                        <strong>
+                                            £1,700
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="full-progress-section">
+
+                                    <div class="detail-heading-row">
+
+                                        <h4>
+                                            Goal Progress
+                                        </h4>
+
+                                        <strong>
+                                            15%
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="full-progress-bar">
+
+                                        <div
+                                            class="full-progress-fill"
+                                            style="width: 15%;"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="goal-information">
+
+
+                                    <div>
+
+                                        <span>
+                                            Deadline
+                                        </span>
+
+                                        <strong>
+                                            No deadline
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Total deposits
+                                        </span>
+
+                                        <strong>
+                                            1
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Highest deposit
+                                        </span>
+
+                                        <strong>
+                                            £300
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="deposit-history">
+
+                                    <div class="detail-heading-row">
+
+                                        <h4>
+                                            Deposit History
+                                        </h4>
+
+                                        <span>
+                                            1 deposit
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="deposit-list">
+
+
+                                        <div class="deposit-item">
+
+                                            <div>
+
+                                                <strong>
+                                                    5 May 2026
+                                                </strong>
+
+                                                <span>
+                                                    First saving
+                                                </span>
+
+                                            </div>
+
+                                            <strong>
+                                                £300
+                                            </strong>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="goal-actions">
+
+                                    <button
+                                        class="deposit-now-btn"
+                                        type="button"
+                                        data-goal-id="4"
+                                    >
+
+                                        <i
+                                            data-lucide="wallet"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Deposit Now
+
+                                    </button>
+
+
+                                    <button
+                                        class="edit-goal-btn"
+                                        type="button"
+                                        data-goal-id="4"
+                                    >
+
+                                        <i
+                                            data-lucide="pencil"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Edit Goal
+
+                                    </button>
+
+                                </div>
+
+
+                                <p class="goal-message">
+
+                                    Start small and stay consistent.
+                                    You are making progress.
+
+                                </p>
+
+                            </div>
+
+                        </article>
+
+
+                    </div>
+
+
+                    <!-- Bottom encouragement -->
+
+                    <div class="savings-encouragement">
+
+                        <i
+                            data-lucide="trending-up"
+                            aria-hidden="true"
+                        ></i>
+
+
+                        <div>
+
+                            <strong>
+                                Keep going!
+                            </strong>
+
+                            <p>
+                                Every deposit brings you one step
+                                closer to your goals.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Right 30% sidebar -->
+
+                <aside class="savings-sidebar">
+
+
+                    <!-- Quick actions -->
+
+                    <section class="side-card">
+
+                        <div class="side-card-header">
+
+                            <div class="side-icon">
+
+                                <i
+                                    data-lucide="zap"
+                                    aria-hidden="true"
+                                ></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    QUICK ACTIONS
+                                </span>
+
+                                <h3>
+                                    Take action
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            class="sidebar-action primary-action"
+                            id="sidebarDepositBtn"
+                            type="button"
+                        >
+
+                            <i
+                                data-lucide="wallet"
+                                aria-hidden="true"
+                            ></i>
+
+                            Deposit Now
+
+                        </button>
+
+
+                        <button
+                            class="sidebar-action secondary-action"
+                            id="sidebarCreateGoalBtn"
+                            type="button"
+                        >
+
+                            <i
+                                data-lucide="plus"
+                                aria-hidden="true"
+                            ></i>
+
+                            Create New Goal
+
+                        </button>
+
+                    </section>
+
+
+                    <!-- Current focus -->
+
+                    <section class="side-card focus-card">
+
+                        <span class="side-card-label">
+                            CURRENT FOCUS
+                        </span>
+
+
+                        <div class="focus-title">
+
+                            <div class="focus-icon">
+
+                                <i
+                                    data-lucide="shield-check"
+                                    aria-hidden="true"
+                                ></i>
+
+                            </div>
+
+
+                            <h3>
+                                Emergency Fund
+                            </h3>
+
+                        </div>
+
+
+                        <p>
+                            Keep building your emergency savings.
+                            You're already 68% of the way there.
+                        </p>
+
+
+                        <div class="side-progress">
+
+                            <div class="side-progress-bar">
+
+                                <div
+                                    class="side-progress-fill"
+                                    style="width: 68%;"
+                                ></div>
+
+                            </div>
+
+
+                            <span>
+                                68%
+                            </span>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- Savings tip -->
+
+                    <section class="side-card tip-card">
+
+                        <div class="tip-icon">
+
+                            <i
+                                data-lucide="lightbulb"
+                                aria-hidden="true"
+                            ></i>
+
+                        </div>
+
+
+                        <h3>
+                            Savings Tip
+                        </h3>
+
+
+                        <p>
+                            Consistent deposits can make reaching
+                            larger goals feel much easier.
+                        </p>
+
+                    </section>
+
+
+                    <!-- Encouragement -->
+
+                    <section class="side-card motivation-card">
+
+                        <div class="motivation-icon">
+
+                            <i
+                                data-lucide="heart"
+                                aria-hidden="true"
+                            ></i>
+
+                        </div>
+
+
+                        <p>
+                            Small progress is still progress.
+                        </p>
+
+                        <span>
+                            Keep building your future.
+                        </span>
+
+                    </section>
+
+                </aside>
 
             </div>
 
@@ -411,6 +1943,17 @@
     </main>
 
 
+    <!-- JavaScript -->
+
     <script src="script.js"></script>
-    </body>
+
+
+    <!-- Activate Lucide icons -->
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+</body>
+
 </html>

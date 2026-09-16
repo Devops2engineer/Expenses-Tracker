@@ -1,47 +1,57 @@
-{
-  "goals": [
+[
     {
-      "name": "Emergency Fund",
-      "targetAmount": 5000,
-      "deadline": "2026-12-31",
-      "deposits": [
-        { "amount": 500, "date": "2026-01-10" },
-        { "amount": 750, "date": "2026-02-15" },
-        { "amount": 600, "date": "2026-03-12" },
-        { "amount": 850, "date": "2026-04-18" },
-        { "amount": 700, "date": "2026-05-20" }
-      ]
+        "id": 1,
+        "name": "Emergency Fund",
+        "targetAmount": 5000,
+        "deadline": "2026-12-31",
+        "priority": true,
+        "icon": "shield-check",
+        "deposits": [
+            { "id": 101, "amount": 500, "date": "2026-01-10", "note": "January saving" },
+            { "id": 102, "amount": 750, "date": "2026-02-15", "note": "Monthly deposit" },
+            { "id": 103, "amount": 600, "date": "2026-03-12", "note": "Monthly deposit" },
+            { "id": 104, "amount": 850, "date": "2026-04-18", "note": "Bonus saving" },
+            { "id": 105, "amount": 700, "date": "2026-05-20", "note": "Monthly deposit" }
+        ]
     },
     {
-      "name": "New Laptop",
-      "targetAmount": 3000,
-      "deadline": "2026-11-30",
-      "deposits": [
-        { "amount": 400, "date": "2026-02-05" },
-        { "amount": 350, "date": "2026-03-08" },
-        { "amount": 500, "date": "2026-04-10" },
-        { "amount": 450, "date": "2026-05-14" }
-      ]
+        "id": 2,
+        "name": "New Laptop",
+        "targetAmount": 3000,
+        "deadline": "2026-11-30",
+        "priority": false,
+        "icon": "laptop",
+        "deposits": [
+            { "id": 201, "amount": 400, "date": "2026-02-05", "note": "Initial deposit" },
+            { "id": 202, "amount": 350, "date": "2026-03-08", "note": "Monthly saving" },
+            { "id": 203, "amount": 500, "date": "2026-04-10", "note": "Monthly saving" },
+            { "id": 204, "amount": 450, "date": "2026-05-14", "note": "Monthly saving" }
+        ]
     },
     {
-      "name": "Holiday Fund",
-      "targetAmount": 2500,
-      "deadline": "2026-10-15",
-      "deposits": [
-        { "amount": 500, "date": "2026-01-05" },
-        { "amount": 500, "date": "2026-02-05" },
-        { "amount": 500, "date": "2026-03-05" },
-        { "amount": 500, "date": "2026-04-05" },
-        { "amount": 500, "date": "2026-05-05" }
-      ]
+        "id": 3,
+        "name": "Holiday Fund",
+        "targetAmount": 2500,
+        "deadline": "2026-10-15",
+        "priority": false,
+        "icon": "plane",
+        "deposits": [
+            { "id": 301, "amount": 500, "date": "2026-01-25", "note": "Trip fund" },
+            { "id": 302, "amount": 500, "date": "2026-02-25", "note": "Trip fund" },
+            { "id": 303, "amount": 500, "date": "2026-03-25", "note": "Trip fund" },
+            { "id": 304, "amount": 500, "date": "2026-04-25", "note": "Trip fund" },
+            { "id": 305, "amount": 500, "date": "2026-05-25", "note": "Final deposit" }
+        ]
     },
     {
-      "name": "Gaming Setup",
-      "targetAmount": 2000,
-      "deadline": null,
-      "deposits": [
-        { "amount": 300, "date": "2026-05-05" }
-      ]
+        "id": 4,
+        "name": "Gaming Setup",
+        "targetAmount": 2000,
+        "deadline": null,
+        "priority": false,
+        "icon": "gamepad-2",
+        "deposits": [
+            { "id": 401, "amount": 300, "date": "2026-05-05", "note": "First saving" }
+        ]
     }
-  ]
-}
+]
