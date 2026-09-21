@@ -4,6 +4,13 @@ const DATA_FILE_PATH = "./Assests/data.json";
 let goals = [];
 let currentCurrency = localStorage.getItem("currency") || "GBP";
 
+// Refresh Lucide icons
+function refreshIcons() {
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
 function saveGoalsToStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
 }
@@ -565,9 +572,7 @@ function renderGoals() {
             goalCount.textContent = `${visibleGoals.length} ${visibleGoals.length === 1 ? "Goal" : "Goals"}`;
         }
 
-        if (window.lucide) {
-            lucide.createIcons();
-        }
+        refreshIcons();
         return;
     }
 
@@ -616,7 +621,7 @@ function viewGoalDetails(goal) {
         depositHistory = goal.deposits
             .map(deposit => {
                 return `${deposit.date}: ${formatCurrency(deposit.amount)}`;
-            })
+             })
             .join("\n");
     }
 
@@ -793,9 +798,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupFilters();
     setupSorting();
 
-    if (window.lucide) {
-        lucide.createIcons();
-    }
+    refreshIcons();
 
     document.querySelectorAll(".create-goal-btn").forEach(button => {
         button.addEventListener("click", event => {
