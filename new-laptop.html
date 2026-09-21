@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaveFlow - New Laptop</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+
+<body class="fund-detail-page" data-fund="new-laptop">
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>SaveFlow</h2>
+            <p>Loading your laptop goal...</p>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <a href="index.html">
+                <img src="Assests/mainlogobgremoved.png" alt="SaveFlow">
+            </a>
+        </div>
+
+        <ul class="menu">
+            <li><a href="index.html"><i data-lucide="house" aria-hidden="true"></i><span>Home</span></a></li>
+            <li><a href="transactions.html"><i data-lucide="arrow-left-right" aria-hidden="true"></i><span>Transactions</span></a></li>
+            <li><a href="savings.html" class="active"><i data-lucide="piggy-bank" aria-hidden="true"></i><span>Savings</span></a></li>
+        </ul>
+
+        <div class="account">
+            <a href="#" class="account-link">
+                <div class="account-icon"><i data-lucide="user-round" aria-hidden="true"></i></div>
+                <div class="account-name">Account Name</div>
+            </a>
+        </div>
+
+        <label for="currencySelect">Currency:</label>
+        <select id="currencySelect">
+            <option value="GBP">GBP (£)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="AED">AED (د.إ)</option>
+            <option value="CAD">CAD ($)</option>
+            <option value="AUD">AUD ($)</option>
+            <option value="INR">INR (₹)</option>
+            <option value="NGN">NGN (₦)</option>
+            <option value="JPY">JPY (¥)</option>
+        </select>
+    </nav>
+
+    <main class="dashboard">
+        <div id="fundDetailContent"></div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    </script>
+</body>
+
+</html>
