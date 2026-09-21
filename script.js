@@ -377,10 +377,199 @@ function createGoalCard(goal) {
     return card;
 }
 
+// Create one expandable savings-page card
+function createSavingsGoalCard(goal) {
+    const saved = calculateGoalSavings(goal);
+    const progress = calculateProgress(goal);
+    const completed = progress >= 100;
+    const deposits = [...(goal.deposits || [])].sort((first, second) =>
+        new Date(second.date) - new Date(first.date)
+    );
+    const depositHistory = deposits.length > 0
+        ? deposits.map(deposit => `
+            <div class="deposit-item">
+                <div>
+                    <strong>${formatDeadline(deposit.date)}</strong>
+                    <span>${escapeHTML(deposit.note || "Deposit")}</span>
+                </div>
+                <strong>${formatCurrency(deposit.amount)}</strong>
+            </div>
+        `).join("")
+        : `<div class="deposit-list-empty">No deposits yet.</div>`;
+
+    const card = document.createElement("article");
+    card.className = "savings-goal-card";
+    card.dataset.goalId = goal.id;
+    card.innerHTML = `
+        <button class="goal-toggle" type="button" aria-expanded="false" aria-controls="goal-details-${goal.id}">
+            <div class="goal-icon"><i data-lucide="${escapeHTML(goal.icon || "target")}" aria-hidden="true"></i></div>
+            <div class="goal-summary">
+                <div class="goal-title-row">
+                    <h3>${escapeHTML(goal.name)}</h3>
+                    ${goal.priority ? `<span class="priority-badge"><i data-lucide="star"></i> Priority</span>` : ""}
+                    ${completed ? `<span class="completed-badge"><i data-lucide="circle-check"></i> Completed</span>` : ""}
+                </div>
+                <p>${formatCurrency(saved)} saved of ${formatCurrency(goal.targetAmount)}</p>
+                <div class="goal-mini-progress">
+                    <div class="goal-mini-progress-bar"><div class="goal-mini-progress-fill" style="width: ${progress}%"></div></div>
+                    <span>${Math.round(progress)}%</span>
+                </div>
+            </div>
+            <span class="goal-arrow"><i data-lucide="chevron-down" aria-hidden="true"></i></span>
+        </button>
+        <div class="goal-details" id="goal-details-${goal.id}" hidden>
+            <div class="goal-details-top">
+                <div class="detail-card"><span>Amount saved</span><strong>${formatCurrency(saved)}</strong></div>
+                <div class="detail-card"><span>Target amount</span><strong>${formatCurrency(goal.targetAmount)}</strong></div>
+                <div class="detail-card"><span>Remaining</span><strong>${formatCurrency(calculateRemaining(goal))}</strong></div>
+            </div>
+            <div class="full-progress-section">
+                <div class="detail-heading-row"><h4>Goal Progress</h4><strong>${Math.round(progress)}%</strong></div>
+                <div class="full-progress-bar"><div class="full-progress-fill" style="width: ${progress}%"></div></div>
+            </div>
+            <div class="goal-information">
+                <div><span>${completed ? "Completed" : "Deadline"}</span><strong>${completed ? "Goal reached!" : formatDeadline(goal.deadline)}</strong></div>
+                <div><span>Total deposits</span><strong>${deposits.length}</strong></div>
+                <div><span>Highest deposit</span><strong>${formatCurrency(Math.max(0, ...deposits.map(deposit => Number(deposit.amount))))}</strong></div>
+            </div>
+            <div class="deposit-history">
+                <div class="detail-heading-row"><h4>Deposit History</h4><span>${deposits.length} ${deposits.length === 1 ? "deposit" : "deposits"}</span></div>
+                <div class="deposit-list">${depositHistory}</div>
+            </div>
+            <div class="goal-actions">
+                ${completed ? "" : `<button class="deposit-now-btn" type="button" data-goal-id="${goal.id}">Deposit Now</button>`}
+                <button class="edit-goal-btn" type="button" data-goal-id="${goal.id}">Edit Goal</button>
+            </div>
+        </div>
+    `;
+
+    return card;
+}
+
+function createGoal() {
+    const name = prompt("Enter the goal name:");
+    const target = prompt("Enter the target amount:");
+    const targetAmount = Number(target);
+
+    if (!name || !name.trim() || !Number.isFinite(targetAmount) || targetAmount <= 0) {
+        return;
+    }
+
+    goals.push({
+        id: Date.now(),
+        name: name.trim(),
+        targetAmount,
+        deadline: null,
+        priority: false,
+        icon: "target",
+        deposits: []
+    });
+    saveGoalsToStorage();
+    renderGoals();
+    updateDashboard();
+}
+
+function editGoal(goal) {
+    const name = prompt("Edit goal name:", goal.name);
+    const target = prompt("Edit target amount:", goal.targetAmount);
+    const targetAmount = Number(target);
+
+    if (!name || !name.trim() || !Number.isFinite(targetAmount) || targetAmount <= 0) {
+        return;
+    }
+
+    goal.name = name.trim();
+    goal.targetAmount = targetAmount;
+    saveGoalsToStorage();
+    renderGoals();
+    updateDashboard();
+}
+
+function depositToGoal(goal) {
+    const amount = Number(prompt(`Deposit amount for ${goal.name}:`));
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+        return;
+    }
+
+    goal.deposits = goal.deposits || [];
+    goal.deposits.push({
+        id: Date.now(),
+        amount,
+        date: new Date().toISOString().slice(0, 10),
+        note: "Deposit"
+    });
+    saveGoalsToStorage();
+    renderGoals();
+    updateDashboard();
+    renderChart();
+}
+
 // Display goal cards
 function renderGoals() {
     const goalGrid = document.getElementById("goalGrid");
     const emptyState = document.getElementById("emptyState");
+    const goalList = document.getElementById("goalList");
+
+    if (!goalGrid && goalList) {
+        goalList.innerHTML = "";
+        const visibleGoals = sortGoals(getFilteredGoals());
+
+        visibleGoals.forEach(goal => {
+            goalList.appendChild(createSavingsGoalCard(goal));
+        });
+
+        goalList.querySelectorAll(".goal-toggle").forEach(button => {
+            button.addEventListener("click", () => {
+                const details = button.nextElementSibling;
+                const card = button.closest(".savings-goal-card");
+                const isOpen = !details.hidden;
+
+                if (!isOpen) {
+                    goalList.querySelectorAll(".savings-goal-card.open").forEach(openCard => {
+                        if (openCard === card) {
+                            return;
+                        }
+
+                        const openDetails = openCard.querySelector(".goal-details");
+                        const openToggle = openCard.querySelector(".goal-toggle");
+
+                        openDetails.hidden = true;
+                        openToggle.setAttribute("aria-expanded", "false");
+                        openCard.classList.remove("open");
+                    });
+                }
+
+                details.hidden = isOpen;
+                button.setAttribute("aria-expanded", String(!isOpen));
+                card.classList.toggle("open", !isOpen);
+            });
+        });
+
+        goalList.querySelectorAll(".deposit-now-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const goal = goals.find(item => item.id === Number(button.dataset.goalId));
+                if (goal) depositToGoal(goal);
+            });
+        });
+
+        goalList.querySelectorAll(".edit-goal-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const goal = goals.find(item => item.id === Number(button.dataset.goalId));
+                if (goal) editGoal(goal);
+            });
+        });
+
+        const goalCount = document.getElementById("goalCount");
+        if (goalCount) {
+            goalCount.textContent = `${visibleGoals.length} ${visibleGoals.length === 1 ? "Goal" : "Goals"}`;
+        }
+
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+        return;
+    }
 
     if (!goalGrid) {
         return;
@@ -409,6 +598,10 @@ function renderGoals() {
 
         goalGrid.appendChild(goalCard);
     });
+
+    if (emptyState) {
+        emptyState.style.display = visibleGoals.length === 0 ? "block" : "none";
+    }
 }
 
 // View goal details
@@ -599,6 +792,17 @@ document.addEventListener("DOMContentLoaded", () => {
     setupCurrencySelector();
     setupFilters();
     setupSorting();
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+
+    document.querySelectorAll(".create-goal-btn").forEach(button => {
+        button.addEventListener("click", event => {
+            event.preventDefault();
+            createGoal();
+        });
+    });
 
     const exportButton = document.getElementById("exportGoalsBtn");
 
