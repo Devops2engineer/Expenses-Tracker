@@ -4,6 +4,13 @@ const DATA_FILE_PATH = "./Assests/data.json";
 let goals = [];
 let currentCurrency = localStorage.getItem("currency") || "GBP";
 
+// Refresh Lucide icons
+function refreshIcons() {
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
 function saveGoalsToStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
 }
@@ -70,6 +77,334 @@ const exchangeRates = {
     NGN: 2150,
     JPY: 200
 };
+
+const fundDetails = {
+    emergency: {
+        name: "Emergency Fund",
+        icon: "shield-check",
+        saved: 3400,
+        target: 5000,
+        progress: 68,
+        deadline: "31 Dec 2026",
+        totalDeposits: 5,
+        highestDeposit: 850,
+        priority: true,
+        completed: false,
+        statusText: "Priority",
+        message: "You're over halfway there. Keep building your safety net!",
+        deposits: [
+            { date: "20 May 2026", note: "Monthly deposit", amount: 700 },
+            { date: "18 Apr 2026", note: "Bonus saving", amount: 850 },
+            { date: "12 Mar 2026", note: "Monthly deposit", amount: 600 },
+            { date: "15 Feb 2026", note: "Monthly deposit", amount: 750 },
+            { date: "10 Jan 2026", note: "January saving", amount: 500 }
+        ]
+    },
+    holiday: {
+        name: "Holiday Fund",
+        icon: "plane",
+        saved: 2500,
+        target: 2500,
+        progress: 100,
+        deadline: "25 May 2026",
+        totalDeposits: 5,
+        highestDeposit: 500,
+        priority: false,
+        completed: true,
+        statusText: "Completed",
+        message: "You did it! Your holiday goal is complete.",
+        deposits: [
+            { date: "25 May 2026", note: "Final deposit", amount: 500 },
+            { date: "25 Apr 2026", note: "Trip fund", amount: 500 },
+            { date: "25 Mar 2026", note: "Trip fund", amount: 500 },
+            { date: "25 Feb 2026", note: "Trip fund", amount: 500 },
+            { date: "25 Jan 2026", note: "Trip fund", amount: 500 }
+        ]
+    },
+    "new-laptop": {
+        name: "New Laptop",
+        icon: "laptop",
+        saved: 1700,
+        target: 3000,
+        progress: 57,
+        deadline: "30 Nov 2026",
+        totalDeposits: 4,
+        highestDeposit: 500,
+        priority: false,
+        completed: false,
+        statusText: "In progress",
+        message: "Every deposit brings you closer to your new laptop.",
+        deposits: [
+            { date: "14 May 2026", note: "Monthly saving", amount: 450 },
+            { date: "10 Apr 2026", note: "Monthly saving", amount: 500 },
+            { date: "08 Mar 2026", note: "Monthly saving", amount: 350 },
+            { date: "05 Feb 2026", note: "Initial deposit", amount: 400 }
+        ]
+    },
+    "gaming-setup": {
+        name: "Gaming Setup",
+        icon: "gamepad-2",
+        saved: 300,
+        target: 2000,
+        progress: 15,
+        deadline: "No deadline",
+        totalDeposits: 1,
+        highestDeposit: 300,
+        priority: false,
+        completed: false,
+        statusText: "In progress",
+        message: "Start small and stay consistent. You are making progress.",
+        deposits: [
+            { date: "05 May 2026", note: "First saving", amount: 300 }
+        ]
+    }
+};
+
+function renderFundDetailPage() {
+    const bodyFund = document.body.dataset.fund;
+    const config = fundDetails[bodyFund];
+    const container = document.getElementById("fundDetailContent");
+
+    if (!container || !config) {
+        return;
+    }
+
+    const remaining = Math.max(config.target - config.saved, 0);
+    const badge = config.completed
+        ? '<span class="fund-badge completed-badge"><i data-lucide="circle-check" aria-hidden="true"></i> Completed</span>'
+        : config.priority
+            ? '<span class="fund-badge priority-badge"><i data-lucide="star" aria-hidden="true"></i> Priority</span>'
+            : '<span class="fund-badge in-progress-badge"><i data-lucide="clock-3" aria-hidden="true"></i> In progress</span>';
+
+    const depositRows = config.deposits.map(deposit => `
+        <div class="deposit-item">
+            <div>
+                <strong>${deposit.date}</strong>
+                <span>${deposit.note}</span>
+            </div>
+            <strong>${formatCurrency(deposit.amount)}</strong>
+        </div>
+    `).join("");
+
+    container.innerHTML = `
+        <div class="fund-detail-shell">
+            <div class="fund-header-row">
+                <div>
+                    <span class="page-label">Savings Goal</span>
+                    <h1>${config.name}</h1>
+                    <p>Review your progress, track deposits, and manage this goal in one place.</p>
+                </div>
+                <button class="create-goal-btn back-to-savings-btn" type="button">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i>
+                    Back to Savings
+                </button>
+            </div>
+
+            <article class="fund-detail-card">
+                <div class="fund-summary-row">
+                    <div class="fund-icon-wrap">
+                        <i data-lucide="${config.icon}" aria-hidden="true"></i>
+                    </div>
+                    <div class="fund-summary-copy">
+                        <div class="fund-title-row">
+                            <h2>${config.name}</h2>
+                            ${badge}
+                        </div>
+                        <p>${formatCurrency(config.saved)} saved of ${formatCurrency(config.target)}</p>
+                        <div class="goal-mini-progress">
+                            <div class="goal-mini-progress-bar">
+                                <div class="goal-mini-progress-fill ${config.completed ? "completed-fill" : ""}" style="width: ${config.progress}%"></div>
+                            </div>
+                            <span>${Math.round(config.progress)}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="goal-details-top">
+                    <div class="detail-card">
+                        <span>Amount saved</span>
+                        <strong>${formatCurrency(config.saved)}</strong>
+                    </div>
+                    <div class="detail-card">
+                        <span>Target amount</span>
+                        <strong>${formatCurrency(config.target)}</strong>
+                    </div>
+                    <div class="detail-card">
+                        <span>Remaining</span>
+                        <strong>${formatCurrency(remaining)}</strong>
+                    </div>
+                </div>
+
+                <div class="full-progress-section">
+                    <div class="detail-heading-row">
+                        <h4>Goal Progress</h4>
+                        <strong>${Math.round(config.progress)}%</strong>
+                    </div>
+                    <div class="full-progress-bar">
+                        <div class="full-progress-fill ${config.completed ? "completed-fill" : ""}" style="width: ${config.progress}%"></div>
+                    </div>
+                </div>
+
+                <div class="goal-information">
+                    <div>
+                        <span>${config.completed ? "Completed" : "Deadline"}</span>
+                        <strong>${config.completed ? config.deadline : config.deadline}</strong>
+                    </div>
+                    <div>
+                        <span>Total deposits</span>
+                        <strong>${config.totalDeposits}</strong>
+                    </div>
+                    <div>
+                        <span>Highest deposit</span>
+                        <strong>${formatCurrency(config.highestDeposit)}</strong>
+                    </div>
+                </div>
+
+                <div class="deposit-history">
+                    <div class="detail-heading-row">
+                        <h4>Deposit History</h4>
+                        <span>${config.totalDeposits} ${config.totalDeposits === 1 ? "deposit" : "deposits"}</span>
+                    </div>
+                    <div class="deposit-list">
+                        ${depositRows}
+                    </div>
+                </div>
+
+                <div class="goal-actions">
+                    <button class="deposit-now-btn" type="button">
+                        <i data-lucide="wallet" aria-hidden="true"></i>
+                        ${config.completed ? "Deposit More" : "Deposit Now"}
+                    </button>
+                    <button class="edit-goal-btn" type="button" data-page="edit-goal.html">
+                        <i data-lucide="pencil" aria-hidden="true"></i>
+                        Edit Goal
+                    </button>
+                </div>
+
+                <p class="goal-message">${config.message}</p>
+            </article>
+        </div>
+    `;
+
+    const backButton = document.querySelector(".back-to-savings-btn");
+    if (backButton) {
+        backButton.addEventListener("click", () => {
+            window.location.href = "savings.html";
+        });
+    }
+
+    const depositButton = document.querySelector(".deposit-now-btn");
+    if (depositButton) {
+        depositButton.addEventListener("click", () => {
+            alert(`Deposit feature for ${config.name} can be connected next.`);
+        });
+    }
+
+    const editButton = document.querySelector(".edit-goal-btn");
+    if (editButton) {
+        editButton.addEventListener("click", () => {
+            const fundKey = document.body.dataset.fund || "emergency";
+            window.location.href = `edit-goal.html?fund=${encodeURIComponent(fundKey)}`;
+        });
+    }
+
+    refreshIcons();
+}
+
+function renderEditGoalPage() {
+    const container = document.getElementById("editGoalContent");
+    if (!container) {
+        return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const fundKey = params.get("fund") || "emergency";
+    const config = fundDetails[fundKey] || fundDetails.emergency;
+
+    container.innerHTML = `
+        <div class="fund-detail-shell">
+            <div class="fund-header-row">
+                <div>
+                    <span class="page-label">Edit Goal</span>
+                    <h1>${config.name}</h1>
+                    <p>Update your target details and save the changes for this goal.</p>
+                </div>
+                <button class="create-goal-btn back-to-savings-btn" type="button">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i>
+                    Back to Savings
+                </button>
+            </div>
+
+            <article class="fund-detail-card form-card">
+                <form id="editGoalForm" class="goal-edit-form">
+                    <div class="form-grid">
+                        <label>
+                            <span>Goal name</span>
+                            <input type="text" name="goalName" value="${config.name}" required>
+                        </label>
+
+                        <label>
+                            <span>Target amount</span>
+                            <input type="number" name="goalTarget" value="${config.target}" min="1" step="0.01" required>
+                        </label>
+
+                        <label>
+                            <span>Deadline</span>
+                            <input type="date" name="goalDeadline" value="2026-12-31">
+                        </label>
+
+                        <label>
+                            <span>Priority goal</span>
+                            <select name="goalPriority">
+                                <option value="yes" ${config.priority ? "selected" : ""}>Yes</option>
+                                <option value="no" ${!config.priority ? "selected" : ""}>No</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="create-goal-btn">Save Changes</button>
+                        <button type="button" class="secondary-action edit-cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </article>
+        </div>
+    `;
+
+    const form = document.getElementById("editGoalForm");
+    if (form) {
+        form.addEventListener("submit", event => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const updatedName = formData.get("goalName").toString().trim();
+            const updatedTarget = Number(formData.get("goalTarget"));
+
+            if (!updatedName || !Number.isFinite(updatedTarget) || updatedTarget <= 0) {
+                alert("Please enter a valid goal name and target amount.");
+                return;
+            }
+
+            alert(`${updatedName} has been updated successfully.`);
+            window.location.href = "savings.html";
+        });
+    }
+
+    const cancelButton = document.querySelector(".edit-cancel-btn");
+    if (cancelButton) {
+        cancelButton.addEventListener("click", () => {
+            window.location.href = "savings.html";
+        });
+    }
+
+    const backButton = document.querySelector(".back-to-savings-btn");
+    if (backButton) {
+        backButton.addEventListener("click", () => {
+            window.location.href = "savings.html";
+        });
+    }
+
+    refreshIcons();
+}
 
 // Load savings goals
 function loadGoals() {
@@ -367,7 +702,7 @@ function createGoalCard(goal) {
     const moreButton = card.querySelector(".more-btn");
 
     viewButton.addEventListener("click", () => {
-        viewGoalDetails(goal);
+        window.location.href = getGoalPage(goal);
     });
 
     moreButton.addEventListener("click", () => {
@@ -469,20 +804,30 @@ function createGoal() {
     updateDashboard();
 }
 
-function editGoal(goal) {
-    const name = prompt("Edit goal name:", goal.name);
-    const target = prompt("Edit target amount:", goal.targetAmount);
-    const targetAmount = Number(target);
-
-    if (!name || !name.trim() || !Number.isFinite(targetAmount) || targetAmount <= 0) {
-        return;
+function getGoalPage(goal) {
+    if (!goal) {
+        return "emergency.html";
     }
 
-    goal.name = name.trim();
-    goal.targetAmount = targetAmount;
-    saveGoalsToStorage();
-    renderGoals();
-    updateDashboard();
+    const name = String(goal.name || "").toLowerCase();
+
+    if (name.includes("holiday")) {
+        return "holiday.html";
+    }
+
+    if (name.includes("laptop")) {
+        return "new-laptop.html";
+    }
+
+    if (name.includes("gaming")) {
+        return "gaming-setup.html";
+    }
+
+    return "emergency.html";
+}
+
+function editGoal(goal) {
+    window.location.href = "transactions.html";
 }
 
 function depositToGoal(goal) {
@@ -560,14 +905,22 @@ function renderGoals() {
             });
         });
 
+        document.querySelectorAll(".edit-goal-btn").forEach(button => {
+            const goal = goals.find(item => item.id === Number(button.dataset.goalId));
+            const page = "transactions.html";
+            button.dataset.page = page;
+            button.addEventListener("click", event => {
+                event.preventDefault();
+                window.location.href = page;
+            });
+        });
+
         const goalCount = document.getElementById("goalCount");
         if (goalCount) {
             goalCount.textContent = `${visibleGoals.length} ${visibleGoals.length === 1 ? "Goal" : "Goals"}`;
         }
 
-        if (window.lucide) {
-            lucide.createIcons();
-        }
+        refreshIcons();
         return;
     }
 
@@ -606,52 +959,23 @@ function renderGoals() {
 
 // View goal details
 function viewGoalDetails(goal) {
-    const saved = calculateGoalSavings(goal);
-    const remaining = calculateRemaining(goal);
-    const progress = calculateProgress(goal);
-
-    let depositHistory = "No deposits yet.";
-
-    if (goal.deposits && goal.deposits.length > 0) {
-        depositHistory = goal.deposits
-            .map(deposit => {
-                return `${deposit.date}: ${formatCurrency(deposit.amount)}`;
-            })
-            .join("\n");
-    }
-
-    alert(
-        `${goal.name}\n\n` +
-        `Saved: ${formatCurrency(saved)}\n` +
-        `Target: ${formatCurrency(goal.targetAmount)}\n` +
-        `Remaining: ${formatCurrency(remaining)}\n` +
-        `Progress: ${Math.round(progress)}%\n` +
-        `Deadline: ${formatDeadline(goal.deadline)}\n\n` +
-        `Deposit history:\n${depositHistory}`
-    );
+    window.location.href = getGoalPage(goal);
 }
 
 // Display more options
 function showGoalOptions(goal) {
-    alert(
-        `More options for ${goal.name}\n\n` +
-        `Edit and delete functions can be added next.`
-    );
+    alert(`More options for ${goal.name} are coming soon.`);
 }
 
-// Setup filter buttons
+// Setup savings filters
 function setupFilters() {
-    const filterButtons = document.querySelectorAll("[data-filter]");
-
-    filterButtons.forEach(button => {
+    document.querySelectorAll("[data-filter]").forEach(button => {
         button.addEventListener("click", () => {
             currentFilter = button.dataset.filter;
 
-            filterButtons.forEach(filterButton => {
-                filterButton.classList.remove("active");
+            document.querySelectorAll("[data-filter]").forEach(filterButton => {
+                filterButton.classList.toggle("active", filterButton === button);
             });
-
-            button.classList.add("active");
 
             renderGoals();
         });
@@ -789,18 +1113,42 @@ function hideLoadingScreen() {
 
 // Start SaveFlow
 document.addEventListener("DOMContentLoaded", () => {
+    if (document.body.dataset.fund) {
+        renderFundDetailPage();
+    }
+
+    if (document.body.dataset.page === "edit-goal") {
+        renderEditGoalPage();
+    }
+
     setupCurrencySelector();
     setupFilters();
     setupSorting();
 
-    if (window.lucide) {
-        lucide.createIcons();
-    }
+    refreshIcons();
 
     document.querySelectorAll(".create-goal-btn").forEach(button => {
         button.addEventListener("click", event => {
             event.preventDefault();
             createGoal();
+        });
+    });
+
+    document.querySelectorAll(".edit-goal-btn").forEach(button => {
+        const goalId = button.dataset.goalId ? Number(button.dataset.goalId) : null;
+        const goal = goalId ? goals.find(item => item.id === goalId) : null;
+        const page = button.dataset.page || getGoalPage(goal);
+        button.dataset.page = page;
+        button.addEventListener("click", event => {
+            event.preventDefault();
+            window.location.href = page;
+        });
+    });
+
+    document.querySelectorAll(".view-btn[data-page]").forEach(button => {
+        button.addEventListener("click", event => {
+            event.preventDefault();
+            window.location.href = button.dataset.page;
         });
     });
 

@@ -15,7 +15,10 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- Lucide icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"
+        defer
+    ></script>
 
 </head>
 
@@ -677,6 +680,7 @@
                                         class="edit-goal-btn"
                                         type="button"
                                         data-goal-id="1"
+                                        data-page="emergency.html"
                                     >
 
                                         <i
@@ -1030,6 +1034,7 @@
                                         class="edit-goal-btn"
                                         type="button"
                                         data-goal-id="2"
+                                        data-page="new-laptop.html"
                                     >
 
                                         <i
@@ -1414,6 +1419,7 @@
                                         class="edit-goal-btn"
                                         type="button"
                                         data-goal-id="3"
+                                        data-page="holiday.html"
                                     >
 
                                         <i
@@ -1701,6 +1707,7 @@
                                         class="edit-goal-btn"
                                         type="button"
                                         data-goal-id="4"
+                                        data-page="gaming-setup.html"
                                     >
 
                                         <i
@@ -1951,7 +1958,9 @@
     <!-- Activate Lucide icons -->
 
     <script>
-        lucide.createIcons();
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
     </script>
 
 </body>
