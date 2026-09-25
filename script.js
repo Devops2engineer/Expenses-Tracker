@@ -52,7 +52,7 @@ function renderTransactions() {
 
   if (transactions.length === 0) {
     const emptyItem = document.createElement("li");
-    emptyItem.className = "empty-state";
+    emptyItem.className = "transaction-empty-state";
     emptyItem.textContent = "No transactions yet.";
     transactionsList.appendChild(emptyItem);
     updateTotal();
