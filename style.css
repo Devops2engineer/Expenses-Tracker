@@ -1,0 +1,174 @@
+*/ Basic reset and base font */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #f0f2f5;
+  color: #2c2c2c;
+  line-height: 1.5;
+}
+
+/* Page header at the top */
+.app-header {
+  background-color: #1e2a38;
+  color: white;
+  padding: 32px 20px;
+  text-align: center;
+}
+
+.app-header h1 {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.app-header .subtitle {
+  font-size: 14px;
+  color: #b8c2cc;
+  margin-top: 4px;
+}
+
+/* Container that holds both cards, centered on the page */
+.app-container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+/* Shared card style for both sections */
+.card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Soft shadow for depth */
+}
+
+.card h2 {
+  font-size: 18px;
+  color: #1e2a38;
+  margin-bottom: 16px;
+}
+
+/* Groups each label + input together with consistent spacing */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 6px;
+  text-transform: uppercase; /* Small caps look, adds a professional touch */
+  letter-spacing: 0.3px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d7dbe0;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease; /* Smooth color change on focus */
+}
+
+/* Focus state: highlighted border when the field is active (accessibility) */
+.form-group input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+button[type="submit"] {
+  width: 100%;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover state: darker blue when the mouse is over the button */
+button[type="submit"]:hover {
+  background-color: #3a7bc8;
+}
+
+/* Keyboard focus state on the button, for accessibility */
+button[type="submit"]:focus-visible {
+  outline: 3px solid #a8c8f0;
+  outline-offset: 2px;
+}
+
+.error-message {
+  color: #d9534f;
+  font-size: 13px;
+  margin-top: 10px;
+  min-height: 16px; /* Reserves space so the layout doesn't jump when an error appears */
+}
+
+/* Header row inside the transaction list card */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.total-badge {
+  background-color: #eaf2fd;
+  color: #4a90e2;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 20px; /* Fully rounded pill shape */
+}
+
+/* Transaction list */
+#transactions {
+  list-style: none;
+}
+
+#transactions li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eef0f2;
+  font-size: 14px;
+}
+
+#transactions li:last-child {
+  border-bottom: none;
+}
+
+.transaction-note {
+  color: #777;
+  font-size: 13px;
+}
+
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  padding: 20px 0;
+}
+
+/* Responsive: smaller padding on mobile screens */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 16px 12px 32px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+}

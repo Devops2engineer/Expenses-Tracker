@@ -1,40 +1,63 @@
 <!DOCTYPE html>
-<html>
-    <head> 
-        <link rel="stylesheet" href="style.css">
-<title>Home ● Expense Tracker App  
-</title>                         
-    </head>
-    <script src="script.js"></script>
-    <body>
-        <!-- Section for adding a new transaction -->
-        <section id="add-transaction">
-            <h2>Add New Transaction</h2>
-            <form id="transaction-form">
-                <!--Amount Input-->
-                <label for="amount">Amount:</label>
-                <input type="number" id="amount" name="amount" step="0.01" required>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home ● Expense Tracker App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-                <!-- Optional note input-->
-                 <label for="note">Note:</label>
-                 <input type="text" id="note" name="note">
+  <!-- Page header -->
+  <header class="app-header">
+    <h1>Expense Tracker</h1>
+    <p class="subtitle">Track your transactions in one place</p>
+  </header>
 
-                 <!--Date Input-->
-                 <label for="date">Date:</label>
-                 <input type="date" id="date" name="date" required>
+  <main class="app-container">
 
-                 <!--Submit Button-->
-                 <button type="submit">Add Transaction</button>
-            </form>
-            
-            <!--Placeholder for validation error messages-->
-            <p id="form-error" class="error-message"></p>
-         </section>
+    <!-- Section for adding a new transaction -->
+    <section class="card" id="add-transaction">
+      <h2>Add New Transaction</h2>
 
-         <!-- Section showing the list of all transactions -->
-         <section id="transaction-list">
-            <h2>Transactions</h2>
-            <ul id="transactions"></ul> 
-        </section>  
-    </body>
+      <form id="transaction-form">
+        <!-- Amount input -->
+        <div class="form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" name="amount" step="0.01" placeholder="0.00" required>
+        </div>
+
+        <!-- Optional note input -->
+        <div class="form-group">
+          <label for="note">Note</label>
+          <input type="text" id="note" name="note" placeholder="e.g. Groceries">
+        </div>
+
+        <!-- Date input -->
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit">Add Transaction</button>
+      </form>
+
+      <!-- Placeholder for validation error messages -->
+      <p id="form-error" class="error-message"></p>
+    </section>
+
+    <!-- Section showing the list of all transactions -->
+    <section class="card" id="transaction-list">
+      <div class="list-header">
+        <h2>Transactions</h2>
+        <span id="total-amount" class="total-badge">$0.00</span>
+      </div>
+      <ul id="transactions"></ul>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
 </html>
