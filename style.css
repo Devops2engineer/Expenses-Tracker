@@ -2284,3 +2284,110 @@ a:focus-visible {
     }
 
 }
+/* ===== Transaction section (Elina) ===== */
+
+.card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    max-width: 520px;
+}
+
+.card h2 {
+    font-size: 18px;
+    color: rgb(10, 42, 82);
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d7dbe0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: rgb(24, 110, 215);
+    box-shadow: 0 0 0 3px rgba(24, 110, 215, 0.15);
+}
+
+#transaction-form button[type="submit"] {
+    width: 100%;
+    background-color: rgb(24, 110, 215);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#transaction-form button[type="submit"]:hover {
+    background-color: rgb(12, 88, 185);
+}
+
+.error-message {
+    color: #d9534f;
+    font-size: 13px;
+    margin-top: 10px;
+    min-height: 16px;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.total-badge {
+    background-color: rgb(226, 240, 252);
+    color: rgb(24, 110, 215);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+#transaction-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+#transaction-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eef0f2;
+    font-size: 14px;
+}
+
+#transaction-list li:last-child {
+    border-bottom: none;
+}
+
+.transaction-empty-state {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 20px 0;
+}
