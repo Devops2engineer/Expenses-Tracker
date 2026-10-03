@@ -1217,8 +1217,8 @@ function setupTransactionForm() {
         };
 
         transactions.push(newTransaction);
-        renderTransactions();
-        form.reset();
+        localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(transactions));
+        window.location.href = "transactions.html";
     });
 
     renderTransactions();
