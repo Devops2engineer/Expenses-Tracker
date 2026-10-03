@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Transaction - SaveFlow</title>
+    <title>Account - SaveFlow</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -14,7 +14,7 @@
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <h2>SaveFlow</h2>
-            <p>Loading...</p>
+            <p>Loading your account...</p>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
                 </a>
             </li>
             <li>
-                <a href="transactions.html" class="active">
+                <a href="transactions.html">
                     <i data-lucide="arrow-left-right" aria-hidden="true"></i>
                     <span>Transactions</span>
                 </a>
@@ -70,35 +70,58 @@
 
         <section class="welcome">
             <div>
-                <h1>Add Transaction</h1>
-                <p>Record a new transaction.</p>
+                <h1>Account</h1>
+                <p>View and manage your account details.</p>
             </div>
-            <a href="transactions.html" class="page-action-btn">← Back to Transactions</a>
         </section>
 
-        <section class="card" id="add-transaction">
-            <h2>New Transaction</h2>
+        <!-- Profile card -->
+        <section class="card" id="profile-card">
+            <h2>Profile</h2>
 
-            <form id="transaction-form">
+            <div class="profile-avatar-row">
+                <div class="profile-avatar" id="profileAvatar">A</div>
+                <div class="profile-avatar-info">
+                    <h3 id="profileDisplayName">Account Name</h3>
+                    <p>Member since January 2026</p>
+                </div>
+            </div>
+
+            <form id="profile-form">
                 <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="number" id="amount" name="amount" step="0.01" placeholder="0.00" required>
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Enter your name">
                 </div>
 
                 <div class="form-group">
-                    <label for="note">Note</label>
-                    <input type="text" id="note" name="note" placeholder="e.g. Emergency Fund deposit">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email">
                 </div>
 
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-
-                <button type="submit">Add Transaction</button>
+                <button type="submit">Save Changes</button>
             </form>
 
-            <p id="form-error" class="error-message"></p>
+            <p id="profile-saved-message" class="profile-message"></p>
+        </section>
+
+        <!-- Transaction summary card -->
+        <section class="card" id="account-summary">
+            <h2>Transaction Summary</h2>
+            <ul>
+                <li>
+                    <span>Total Transactions</span>
+                    <span id="summaryTransactionCount">0</span>
+                </li>
+                <li>
+                    <span>Total Amount</span>
+                    <span id="summaryTransactionTotal">$0.00</span>
+                </li>
+                <li>
+                    <span>Latest Transaction</span>
+                    <span id="summaryLatestTransaction">None yet</span>
+                </li>
+            </ul>
+            <a href="transactions.html" class="page-action-btn">View All Transactions</a>
         </section>
 
     </main>
