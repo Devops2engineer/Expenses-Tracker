@@ -1283,6 +1283,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setupTransactionForm();
+    renderTransactions();
     loadGoalsFromJSON();
 
     // Add a short loading delay
