@@ -1,83 +1,3 @@
- //Key used to save transactions in localStorage
-const TRANSACTIONS_KEY = "saveflow-transactions";
-
-// Sample data shown until the user adds their own transactions
-const sampleTransactions = [
-  { id: 1, amount: 700.00, note: "Emergency Fund deposit", date: "2026-09-20" },
-  { id: 2, amount: 450.00, note: "New Laptop deposit", date: "2026-09-14" },
-  { id: 3, amount: 300.00, note: "Gaming Setup deposit", date: "2026-09-05" }
-];
-
-// Load transactions from localStorage (or use sample data)
-function loadTransactions() {
-  const saved = localStorage.getItem(TRANSACTIONS_KEY);
-  if (!saved) return sampleTransactions;
-  try {
-    return JSON.parse(saved);
-  } catch (error) {
-    return sampleTransactions;
-  }
-}
-
-// Array that holds all transactions
-let transactions = loadTransactions();
-
-// Get references to the HTML elements we need
-const transactionsList = document.getElementById("transactions");
-const totalAmountEl = document.getElementById("total-amount");
-
-// Displays all transactions inside the <ul>, and updates the total badge
-function renderTransactions() {
-    if (!transactionsList) return;
-  transactionsList.innerHTML = ""; // Clear the list before re-drawing it
-
-  if (transactions.length === 0) {
-    const emptyItem = document.createElement("li");
-    emptyItem.className = "transaction-empty-state";
-    emptyItem.textContent = "No transactions yet.";
-    transactionsList.appendChild(emptyItem);
-    updateTotal();
-    return;
-  }
-
-  transactions.forEach(function (transaction) {
-    const listItem = document.createElement("li");
-
-    // Left side: date and note
-    const details = document.createElement("span");
-    details.textContent = `${formatDate(transaction.date)} — ${transaction.note}`;
-
-    // Right side: amount
-    const amountSpan = document.createElement("span");
-    amountSpan.textContent = `$${transaction.amount.toFixed(2)}`;
-
-    listItem.appendChild(details);
-    listItem.appendChild(amountSpan);
-    transactionsList.appendChild(listItem);
-  });
-
-  updateTotal();
-}
-
-// Calculates and displays the total of all transactions
-function updateTotal() {
-    if (!totalAmountEl) return;
-  const total = transactions.reduce(function (sum, transaction) {
-    return sum + transaction.amount;
-  }, 0);
-
-  totalAmountEl.textContent = `$${total.toFixed(2)}`;
-}
-
-// Formats a date string (e.g. "2026-05-20") into a friendlier format (e.g. "20 May 2026")
-function formatDate(dateString) {
-  const options = { day: "numeric", month: "short", year: "numeric" };
-  return new Date(dateString).toLocaleDateString("en-GB", options);
-}
-
-// Show the empty state and total when the page first loads
-renderTransactions();
-
 const STORAGE_KEY = "saveflow-goals";
 const DATA_FILE_PATH = "./Assests/data.json";
 
@@ -1180,6 +1100,130 @@ function escapeHTML(value) {
     return element.innerHTML;
 }
 
+// Transaction tracking (merged from script2.js)
+
+const TRANSACTIONS_KEY = "saveflow-transactions";
+
+// Sample data shown until the user adds their own transactions
+const sampleTransactions = [
+  { id: 1, amount: 700.00, note: "Emergency Fund deposit", date: "2026-09-20" },
+  { id: 2, amount: 450.00, note: "New Laptop deposit", date: "2026-09-14" },
+  { id: 3, amount: 300.00, note: "Gaming Setup deposit", date: "2026-09-05" }
+];
+
+// Load transactions from localStorage (or use sample data)
+function loadTransactions() {
+  const saved = localStorage.getItem(TRANSACTIONS_KEY);
+  if (!saved) return sampleTransactions;
+  try {
+    return JSON.parse(saved);
+  } catch (error) {
+    return sampleTransactions;
+  }
+}
+
+let transactions = loadTransactions();
+
+function renderTransactions() {
+    const transactionsList = document.getElementById("transactions");
+    const totalAmountEl = document.getElementById("total-amount");
+
+    if (!transactionsList || !totalAmountEl) {
+        return;
+    }
+
+    transactionsList.innerHTML = "";
+
+    if (transactions.length === 0) {
+        const emptyItem = document.createElement("li");
+        emptyItem.className = "transaction-empty-state";
+        emptyItem.textContent = "No transactions yet.";
+        transactionsList.appendChild(emptyItem);
+        updateTotal();
+        return;
+    }
+
+    transactions.forEach(function (transaction) {
+        const listItem = document.createElement("li");
+
+        const details = document.createElement("span");
+        details.textContent = `${formatDate(transaction.date)} — ${transaction.note}`;
+        const amountSpan = document.createElement("span");
+        amountSpan.textContent = `$${transaction.amount.toFixed(2)}`;
+
+        listItem.appendChild(details);
+        listItem.appendChild(amountSpan);
+        transactionsList.appendChild(listItem);
+    });
+
+    updateTotal();
+}
+
+function updateTotal() {
+    const totalAmountEl = document.getElementById("total-amount");
+
+    if (!totalAmountEl) {
+        return;
+    }
+
+    const total = transactions.reduce(function (sum, transaction) {
+        return sum + transaction.amount;
+    }, 0);
+
+    totalAmountEl.textContent = `$${total.toFixed(2)}`;
+}
+
+function formatDate(dateString) {
+    const options = { day: "numeric", month: "short", year: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-GB", options);
+}
+
+function setupTransactionForm() {
+    const form = document.getElementById("transaction-form");
+    const errorMessage = document.getElementById("form-error");
+
+    if (!form || !errorMessage) {
+        return;
+    }
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const amountInput = document.getElementById("amount");
+        const noteInput = document.getElementById("note");
+        const dateInput = document.getElementById("date");
+
+        const amount = amountInput.value;
+        const note = noteInput.value.trim();
+        const date = dateInput.value;
+
+        if (!amount || isNaN(amount) || Number(amount) <= 0) {
+            errorMessage.textContent = "Please enter a valid amount greater than 0.";
+            return;
+        }
+
+        if (!date) {
+            errorMessage.textContent = "Please select a date.";
+            return;
+        }
+
+        errorMessage.textContent = "";
+
+        const newTransaction = {
+            id: Date.now(),
+            amount: Number(amount),
+            note: note || "No note",
+            date: date
+        };
+
+        transactions.push(newTransaction);
+        renderTransactions();
+        form.reset();
+    });
+
+    renderTransactions();
+}
+
 // Hide loading screen
 function hideLoadingScreen() {
     const loadingScreen = document.getElementById("loadingScreen");
@@ -1238,6 +1282,7 @@ document.addEventListener("DOMContentLoaded", () => {
         exportButton.addEventListener("click", exportGoalsToFile);
     }
 
+    setupTransactionForm();
     loadGoalsFromJSON();
 
     // Add a short loading delay
