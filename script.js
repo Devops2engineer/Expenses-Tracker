@@ -1101,7 +1101,28 @@ function escapeHTML(value) {
 }
 
 // Transaction tracking (merged from script2.js)
-let transactions = [];
+
+const TRANSACTIONS_KEY = "saveflow-transactions";
+
+// Sample data shown until the user adds their own transactions
+const sampleTransactions = [
+  { id: 1, amount: 700.00, note: "Emergency Fund deposit", date: "2026-09-20" },
+  { id: 2, amount: 450.00, note: "New Laptop deposit", date: "2026-09-14" },
+  { id: 3, amount: 300.00, note: "Gaming Setup deposit", date: "2026-09-05" }
+];
+
+// Load transactions from localStorage (or use sample data)
+function loadTransactions() {
+  const saved = localStorage.getItem(TRANSACTIONS_KEY);
+  if (!saved) return sampleTransactions;
+  try {
+    return JSON.parse(saved);
+  } catch (error) {
+    return sampleTransactions;
+  }
+}
+
+let transactions = loadTransactions();
 
 function renderTransactions() {
     const transactionsList = document.getElementById("transactions");
@@ -1126,8 +1147,7 @@ function renderTransactions() {
         const listItem = document.createElement("li");
 
         const details = document.createElement("span");
-        details.innerHTML = `${formatDate(transaction.date)} <span class="transaction-note">— ${transaction.note}</span>`;
-
+        details.textContent = `${formatDate(transaction.date)} — ${transaction.note}`;
         const amountSpan = document.createElement("span");
         amountSpan.textContent = `$${transaction.amount.toFixed(2)}`;
 
@@ -1263,6 +1283,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setupTransactionForm();
+    renderTransactions();
     loadGoalsFromJSON();
 
     // Add a short loading delay
