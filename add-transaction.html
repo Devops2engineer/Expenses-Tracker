@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction - SaveFlow</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>SaveFlow</h2>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <a href="index.html">
+                <img src="Assets/mainlogobgremoved.png" alt="SaveFlow">
+            </a>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="index.html">
+                    <i data-lucide="house" aria-hidden="true"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="transactions.html" class="active">
+                    <i data-lucide="arrow-left-right" aria-hidden="true"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
+            <li>
+                <a href="savings.html">
+                    <i data-lucide="piggy-bank" aria-hidden="true"></i>
+                    <span>Savings</span>
+                </a>
+            </li>
+        </ul>
+        <div class="account">
+            <a href="#" class="account-link">
+                <div class="account-icon">
+                    <i data-lucide="user-round" aria-hidden="true"></i>
+                </div>
+                <div class="account-name">Account Name</div>
+            </a>
+        </div>
+        <label for="currencySelect">Currency:</label>
+        <select id="currencySelect">
+            <option value="GBP">GBP (£)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="AED">AED (د.إ)</option>
+            <option value="CAD">CAD ($)</option>
+            <option value="AUD">AUD ($)</option>
+            <option value="INR">INR (₹)</option>
+            <option value="NGN">NGN (₦)</option>
+            <option value="JPY">JPY (¥)</option>
+        </select>
+    </nav>
+
+    <main class="dashboard">
+
+        <section class="welcome">
+            <div>
+                <h1>Add Transaction</h1>
+                <p>Record a new transaction.</p>
+            </div>
+            <a href="transactions.html" class="page-action-btn">← Back to Transactions</a>
+        </section>
+
+        <section class="card" id="add-transaction">
+            <h2>New Transaction</h2>
+
+            <form id="transaction-form">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" name="amount" step="0.01" placeholder="0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="note">Note</label>
+                    <input type="text" id="note" name="note" placeholder="e.g. Emergency Fund deposit">
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+
+                <button type="submit">Add Transaction</button>
+            </form>
+
+            <p id="form-error" class="error-message"></p>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
