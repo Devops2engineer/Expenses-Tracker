@@ -2391,3 +2391,21 @@ a:focus-visible {
     font-size: 14px;
     padding: 20px 0;
 }
+
+/* ===== Page action buttons (Elina) ===== */
+
+.page-action-btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 10px 16px;
+    background-color: rgb(24, 110, 215);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.page-action-btn:hover {
+    background-color: rgb(12, 88, 185);
+}

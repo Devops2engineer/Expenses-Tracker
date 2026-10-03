@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Transactions - SaveFlow</title>
-        <link rel="stylesheet" href="style.css">
-        <script src="https://unpkg.com/lucide@latest"></script>
-    </head>
-    <body class="bg-cover bg-center bg-fixed bg-[url('https://images.unsplash.com/photo-1549474753-43a7593c6f09?q=80&w=2940&auto=format&fit=crop')] text-gray-800">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction - SaveFlow</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
 
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <h2>SaveFlow</h2>
-            <p>Loading your transactions...</p>
+            <p>Loading...</p>
         </div>
     </div>
 
@@ -70,23 +70,39 @@
 
         <section class="welcome">
             <div>
-                <h1>Transactions</h1>
-                <p>Review your transaction history.</p>
-                <a href="add-transaction.html" class="page-action-btn">+ Add Transaction</a>
+                <h1>Add Transaction</h1>
+                <p>Record a new transaction.</p>
             </div>
+            <a href="transactions.html" class="page-action-btn">← Back to Transactions</a>
         </section>
 
-        <!-- Section showing the list of all transactions -->
-        <section class="card" id="transaction-list">
-            <div class="list-header">
-                <h2>All Transactions</h2>
-                <span id="total-amount" class="total-badge">$0.00</span>
-            </div>
-            <ul id="transactions"></ul>
+        <section class="card" id="add-transaction">
+            <h2>New Transaction</h2>
+
+            <form id="transaction-form">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" name="amount" step="0.01" placeholder="0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="note">Note</label>
+                    <input type="text" id="note" name="note" placeholder="e.g. Emergency Fund deposit">
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+
+                <button type="submit">Add Transaction</button>
+            </form>
+
+            <p id="form-error" class="error-message"></p>
         </section>
 
     </main>
 
     <script src="script.js"></script>
-    </body>
+</body>
 </html>
