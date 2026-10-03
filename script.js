@@ -45,7 +45,7 @@ function renderTransactions() {
 
     // Left side: date and note
     const details = document.createElement("span");
-    details.innerHTML = `${formatDate(transaction.date)} <span class="transaction-note">— ${transaction.note}</span>`;
+    details.textContent = `${formatDate(transaction.date)} — ${transaction.note}`;
 
     // Right side: amount
     const amountSpan = document.createElement("span");
