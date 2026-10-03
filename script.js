@@ -1224,6 +1224,105 @@ function setupTransactionForm() {
     renderTransactions();
 }
 
+// ===== Account page (Elina) =====
+
+// Load and save the user's profile (name, email) using localStorage
+function setupProfileForm() {
+    const profileForm = document.getElementById("profile-form");
+    const fullNameInput = document.getElementById("fullName");
+    const emailInput = document.getElementById("email");
+    const savedMessage = document.getElementById("profile-saved-message");
+
+    if (!profileForm || !fullNameInput || !emailInput || !savedMessage) {
+        return;
+    }
+
+    // Fill the form with previously saved info
+    fullNameInput.value = localStorage.getItem("profileName") || "";
+    emailInput.value = localStorage.getItem("profileEmail") || "";
+    updateProfileAvatar();
+
+    profileForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const name = fullNameInput.value.trim();
+        const email = emailInput.value.trim();
+
+        if (!name) {
+            savedMessage.textContent = "Please enter your name.";
+            savedMessage.classList.add("error");
+            return;
+        }
+
+        localStorage.setItem("profileName", name);
+        localStorage.setItem("profileEmail", email);
+
+        updateNavAccountName();
+        updateProfileAvatar();
+
+        savedMessage.classList.remove("error");
+        savedMessage.textContent = "Profile saved!";
+    });
+}
+
+// Show the saved name in the nav bar on every page
+function updateNavAccountName() {
+    const savedName = localStorage.getItem("profileName");
+
+    if (!savedName) {
+        return;
+    }
+
+    document.querySelectorAll(".account-name").forEach(function (element) {
+        element.textContent = savedName;
+    });
+}
+
+// Update the avatar letter and display name on the account page
+function updateProfileAvatar() {
+    const avatarEl = document.getElementById("profileAvatar");
+    const displayNameEl = document.getElementById("profileDisplayName");
+
+    if (!avatarEl || !displayNameEl) {
+        return;
+    }
+
+    const name = localStorage.getItem("profileName") || "Account Name";
+
+    avatarEl.textContent = name.charAt(0).toUpperCase();
+    displayNameEl.textContent = name;
+}
+
+// Show a summary of all transactions on the account page
+function updateTransactionSummary() {
+    const countEl = document.getElementById("summaryTransactionCount");
+    const totalEl = document.getElementById("summaryTransactionTotal");
+    const latestEl = document.getElementById("summaryLatestTransaction");
+
+    if (!countEl || !totalEl || !latestEl) {
+        return;
+    }
+
+    const total = transactions.reduce(function (sum, transaction) {
+        return sum + transaction.amount;
+    }, 0);
+
+    countEl.textContent = transactions.length;
+    totalEl.textContent = `$${total.toFixed(2)}`;
+
+    if (transactions.length === 0) {
+        latestEl.textContent = "None yet";
+        return;
+    }
+
+    // Find the transaction with the newest date
+    const latest = [...transactions].sort(function (a, b) {
+        return new Date(b.date) - new Date(a.date);
+    })[0];
+
+    latestEl.textContent = `${latest.note} — $${latest.amount.toFixed(2)}`;
+}
+
 // Hide loading screen
 function hideLoadingScreen() {
     const loadingScreen = document.getElementById("loadingScreen");
@@ -1284,6 +1383,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupTransactionForm();
     renderTransactions();
+    setupProfileForm();
+    updateNavAccountName();
+    updateTransactionSummary();
     loadGoalsFromJSON();
 
     // Add a short loading delay
