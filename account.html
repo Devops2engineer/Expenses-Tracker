@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account - SaveFlow</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>SaveFlow</h2>
+            <p>Loading your account...</p>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <a href="index.html">
+                <img src="Assets/mainlogobgremoved.png" alt="SaveFlow">
+            </a>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="index.html">
+                    <i data-lucide="house" aria-hidden="true"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="transactions.html">
+                    <i data-lucide="arrow-left-right" aria-hidden="true"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
+            <li>
+                <a href="savings.html">
+                    <i data-lucide="piggy-bank" aria-hidden="true"></i>
+                    <span>Savings</span>
+                </a>
+            </li>
+        </ul>
+        <div class="account">
+            <a href="account.html" class="account-link">
+                <div class="account-icon">
+                    <i data-lucide="user-round" aria-hidden="true"></i>
+                </div>
+                <div class="account-name">Account Name</div>
+            </a>
+        </div>
+        <label for="currencySelect">Currency:</label>
+        <select id="currencySelect">
+            <option value="GBP">GBP (£)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="AED">AED (د.إ)</option>
+            <option value="CAD">CAD ($)</option>
+            <option value="AUD">AUD ($)</option>
+            <option value="INR">INR (₹)</option>
+            <option value="NGN">NGN (₦)</option>
+            <option value="JPY">JPY (¥)</option>
+        </select>
+    </nav>
+
+    <main class="dashboard">
+
+        <section class="welcome">
+            <div>
+                <h1>Account</h1>
+                <p>View and manage your account details.</p>
+            </div>
+        </section>
+
+        <!-- Profile card -->
+        <section class="card" id="profile-card">
+            <h2>Profile</h2>
+
+            <div class="profile-avatar-row">
+                <div class="profile-avatar" id="profileAvatar">A</div>
+                <div class="profile-avatar-info">
+                    <h3 id="profileDisplayName">Account Name</h3>
+                    <p>Member since January 2026</p>
+                </div>
+            </div>
+
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Enter your name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email">
+                </div>
+
+                <button type="submit">Save Changes</button>
+            </form>
+
+            <p id="profile-saved-message" class="profile-message"></p>
+        </section>
+
+        <!-- Transaction summary card -->
+        <section class="card" id="account-summary">
+            <h2>Transaction Summary</h2>
+            <ul>
+                <li>
+                    <span>Total Transactions</span>
+                    <span id="summaryTransactionCount">0</span>
+                </li>
+                <li>
+                    <span>Total Amount</span>
+                    <span id="summaryTransactionTotal">$0.00</span>
+                </li>
+                <li>
+                    <span>Latest Transaction</span>
+                    <span id="summaryLatestTransaction">None yet</span>
+                </li>
+            </ul>
+            <a href="transactions.html" class="page-action-btn">View All Transactions</a>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
