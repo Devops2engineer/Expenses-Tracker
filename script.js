@@ -3,9 +3,9 @@ const TRANSACTIONS_KEY = "saveflow-transactions";
 
 // Sample data shown until the user adds their own transactions
 const sampleTransactions = [
-  { id: 1, amount: 45.20, note: "Groceries", date: "2026-09-28" },
-  { id: 2, amount: 12.99, note: "Netflix subscription", date: "2026-09-25" },
-  { id: 3, amount: 60.00, note: "Electricity bill", date: "2026-09-20" }
+  { id: 1, amount: 700.00, note: "Emergency Fund deposit", date: "2026-09-20" },
+  { id: 2, amount: 450.00, note: "New Laptop deposit", date: "2026-09-14" },
+  { id: 3, amount: 300.00, note: "Gaming Setup deposit", date: "2026-09-05" }
 ];
 
 // Load transactions from localStorage (or use sample data)
