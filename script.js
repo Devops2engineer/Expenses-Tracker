@@ -1,53 +1,34 @@
-// Array that holds all transactions in memory
-let transactions = [];
+ //Key used to save transactions in localStorage
+const TRANSACTIONS_KEY = "saveflow-transactions";
+
+// Sample data shown until the user adds their own transactions
+const sampleTransactions = [
+  { id: 1, amount: 45.20, note: "Groceries", date: "2026-09-28" },
+  { id: 2, amount: 12.99, note: "Netflix subscription", date: "2026-09-25" },
+  { id: 3, amount: 60.00, note: "Electricity bill", date: "2026-09-20" }
+];
+
+// Load transactions from localStorage (or use sample data)
+function loadTransactions() {
+  const saved = localStorage.getItem(TRANSACTIONS_KEY);
+  if (!saved) return sampleTransactions;
+  try {
+    return JSON.parse(saved);
+  } catch (error) {
+    return sampleTransactions;
+  }
+}
+
+// Array that holds all transactions
+let transactions = loadTransactions();
 
 // Get references to the HTML elements we need
-const form = document.getElementById("transaction-form");
-const errorMessage = document.getElementById("form-error");
 const transactionsList = document.getElementById("transactions");
 const totalAmountEl = document.getElementById("total-amount");
 
-// Listen for form submission
-form.addEventListener("submit", function (event) {
-  event.preventDefault(); // Prevent the page from reloading on submit
-
-  const amountInput = document.getElementById("amount");
-  const noteInput = document.getElementById("note");
-  const dateInput = document.getElementById("date");
-
-  const amount = amountInput.value;
-  const note = noteInput.value.trim();
-  const date = dateInput.value;
-
-  // Validation: amount must be a positive number
-  if (!amount || isNaN(amount) || Number(amount) <= 0) {
-    errorMessage.textContent = "Please enter a valid amount greater than 0.";
-    return;
-  }
-
-  // Validation: date is required
-  if (!date) {
-    errorMessage.textContent = "Please select a date.";
-    return;
-  }
-
-  errorMessage.textContent = ""; // Clear any previous error message
-
-  // Create a new transaction object
-  const newTransaction = {
-    id: Date.now(),
-    amount: Number(amount),
-    note: note || "No note",
-    date: date
-  };
-
-  transactions.push(newTransaction); // Add it to the array
-  renderTransactions();              // Update what's shown on the page
-  form.reset();                      // Clear the form fields
-});
-
 // Displays all transactions inside the <ul>, and updates the total badge
 function renderTransactions() {
+    if (!transactionsList) return;
   transactionsList.innerHTML = ""; // Clear the list before re-drawing it
 
   if (transactions.length === 0) {
@@ -80,6 +61,7 @@ function renderTransactions() {
 
 // Calculates and displays the total of all transactions
 function updateTotal() {
+    if (!totalAmountEl) return;
   const total = transactions.reduce(function (sum, transaction) {
     return sum + transaction.amount;
   }, 0);
@@ -94,7 +76,9 @@ function formatDate(dateString) {
 }
 
 // Show the empty state and total when the page first loads
-renderTransactions();const STORAGE_KEY = "saveflow-goals";
+renderTransactions();
+
+const STORAGE_KEY = "saveflow-goals";
 const DATA_FILE_PATH = "./Assests/data.json";
 
 let goals = [];
