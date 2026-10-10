@@ -356,7 +356,18 @@ function refreshCurrencyDisplays() {
     updateChartCurrency();
     renderTransactions();
     updateTransactionSummary();
-    if (document.body.dataset.fund || document.body.dataset.page === "goal-details") renderFundDetailPage();
+
+    if (document.body.dataset.fund || document.body.dataset.page === "goal-details") {
+        renderFundDetailPage();
+    }
+
+    if (document.body.dataset.page === "edit-goal") {
+        const goal = getCurrentGoalFromLocation();
+        const targetInput = document.querySelector('#editGoalForm [name="goalTarget"]');
+        if (goal && targetInput && document.activeElement !== targetInput) {
+            targetInput.value = Number(convertCurrency(goal.targetAmount).toFixed(2));
+        }
+    }
 }
 
 // Calculate total savings
