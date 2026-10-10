@@ -63,10 +63,17 @@ async function loadGoalsFromJSON() {
         try {
             const parsedGoals = JSON.parse(savedGoals);
             if (!Array.isArray(parsedGoals)) throw new Error("Saved goals must be an array.");
-            goals = normalizeGoals(parsedGoals);
-            saveGoalsToStorage();
-            loadGoals();
-            return;
+
+            const normalizedGoals = normalizeGoals(parsedGoals);
+            if (normalizedGoals.length > 0) {
+                goals = normalizedGoals;
+                saveGoalsToStorage();
+                loadGoals();
+                return;
+            }
+
+            // Recover the starter data if an earlier failed JSON request saved an empty array.
+            localStorage.removeItem(STORAGE_KEY);
         } catch (error) {
             console.warn("Saved goals were invalid, reloading from data.json.", error);
             localStorage.removeItem(STORAGE_KEY);
