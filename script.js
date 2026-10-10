@@ -1,5 +1,5 @@
 const STORAGE_KEY = "saveflow-goals";
-const DATA_FILE_PATH = "./Assests/data.json";
+const DATA_FILE_PATH = "./Assets/data.json";
 
 let goals = [];
 let currentCurrency = localStorage.getItem("currency") || "GBP";
@@ -31,12 +31,40 @@ function exportGoalsToFile() {
     URL.revokeObjectURL(url);
 }
 
+function normalizeGoals(data) {
+    const source = Array.isArray(data) ? data : data && Array.isArray(data.goals) ? data.goals : [];
+    return source.filter(goal => goal && typeof goal === "object").map((goal, index) => {
+        const targetAmount = Number(goal.targetAmount);
+        const deposits = Array.isArray(goal.deposits) ? goal.deposits
+            .filter(deposit => deposit && typeof deposit === "object")
+            .map((deposit, depositIndex) => ({
+                id: deposit.id ?? `${goal.id ?? index}-${depositIndex}`,
+                amount: Number(deposit.amount),
+                date: typeof deposit.date === "string" ? deposit.date : "",
+                note: typeof deposit.note === "string" ? deposit.note : "Deposit"
+            }))
+            .filter(deposit => Number.isFinite(deposit.amount) && deposit.amount > 0) : [];
+        return {
+            ...goal,
+            id: goal.id ?? Date.now() + index,
+            name: typeof goal.name === "string" ? goal.name.trim() : "",
+            targetAmount,
+            deadline: typeof goal.deadline === "string" && goal.deadline ? goal.deadline : null,
+            priority: Boolean(goal.priority),
+            icon: typeof goal.icon === "string" && goal.icon ? goal.icon : "target",
+            deposits
+        };
+    }).filter(goal => goal.name && Number.isFinite(goal.targetAmount) && goal.targetAmount > 0);
+}
+
 async function loadGoalsFromJSON() {
     const savedGoals = localStorage.getItem(STORAGE_KEY);
-
-    if (savedGoals) {
+    if (savedGoals !== null) {
         try {
-            goals = JSON.parse(savedGoals);
+            const parsedGoals = JSON.parse(savedGoals);
+            if (!Array.isArray(parsedGoals)) throw new Error("Saved goals must be an array.");
+            goals = normalizeGoals(parsedGoals);
+            saveGoalsToStorage();
             loadGoals();
             return;
         } catch (error) {
@@ -47,362 +75,216 @@ async function loadGoalsFromJSON() {
 
     try {
         const response = await fetch(DATA_FILE_PATH);
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-        goals = Array.isArray(data) ? data : data.goals || [];
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        goals = normalizeGoals(await response.json());
         saveGoalsToStorage();
     } catch (error) {
         console.error("Could not load goals from data.json:", error);
         goals = [];
     }
-
     loadGoals();
 }
 
 let currentFilter = "all";
 let currentSort = "deadline";
 
-const exchangeRates = {
-    GBP: 1,
-    USD: 1.35,
-    EUR: 1.16,
-    AED: 4.96,
-    CAD: 1.84,
-    AUD: 2.09,
-    INR: 114,
-    NGN: 2150,
-    JPY: 200
+const FALLBACK_EXCHANGE_RATES = {
+    GBP: 1, USD: 1.35, EUR: 1.16, AED: 4.96, CAD: 1.84,
+    AUD: 2.09, INR: 114, NGN: 2150, JPY: 200
 };
+let exchangeRates = { ...FALLBACK_EXCHANGE_RATES };
+const EXCHANGE_RATE_CACHE_KEY = "saveflow-exchange-rates";
+const EXCHANGE_RATE_CACHE_AGE = 12 * 60 * 60 * 1000;
 
-const fundDetails = {
-    emergency: {
-        name: "Emergency Fund",
-        icon: "shield-check",
-        saved: 3400,
-        target: 5000,
-        progress: 68,
-        deadline: "31 Dec 2026",
-        totalDeposits: 5,
-        highestDeposit: 850,
-        priority: true,
-        completed: false,
-        statusText: "Priority",
-        message: "You're over halfway there. Keep building your safety net!",
-        deposits: [
-            { date: "20 May 2026", note: "Monthly deposit", amount: 700 },
-            { date: "18 Apr 2026", note: "Bonus saving", amount: 850 },
-            { date: "12 Mar 2026", note: "Monthly deposit", amount: 600 },
-            { date: "15 Feb 2026", note: "Monthly deposit", amount: 750 },
-            { date: "10 Jan 2026", note: "January saving", amount: 500 }
-        ]
-    },
-    holiday: {
-        name: "Holiday Fund",
-        icon: "plane",
-        saved: 2500,
-        target: 2500,
-        progress: 100,
-        deadline: "25 May 2026",
-        totalDeposits: 5,
-        highestDeposit: 500,
-        priority: false,
-        completed: true,
-        statusText: "Completed",
-        message: "You did it! Your holiday goal is complete.",
-        deposits: [
-            { date: "25 May 2026", note: "Final deposit", amount: 500 },
-            { date: "25 Apr 2026", note: "Trip fund", amount: 500 },
-            { date: "25 Mar 2026", note: "Trip fund", amount: 500 },
-            { date: "25 Feb 2026", note: "Trip fund", amount: 500 },
-            { date: "25 Jan 2026", note: "Trip fund", amount: 500 }
-        ]
-    },
-    "new-laptop": {
-        name: "New Laptop",
-        icon: "laptop",
-        saved: 1700,
-        target: 3000,
-        progress: 57,
-        deadline: "30 Nov 2026",
-        totalDeposits: 4,
-        highestDeposit: 500,
-        priority: false,
-        completed: false,
-        statusText: "In progress",
-        message: "Every deposit brings you closer to your new laptop.",
-        deposits: [
-            { date: "14 May 2026", note: "Monthly saving", amount: 450 },
-            { date: "10 Apr 2026", note: "Monthly saving", amount: 500 },
-            { date: "08 Mar 2026", note: "Monthly saving", amount: 350 },
-            { date: "05 Feb 2026", note: "Initial deposit", amount: 400 }
-        ]
-    },
-    "gaming-setup": {
-        name: "Gaming Setup",
-        icon: "gamepad-2",
-        saved: 300,
-        target: 2000,
-        progress: 15,
-        deadline: "No deadline",
-        totalDeposits: 1,
-        highestDeposit: 300,
-        priority: false,
-        completed: false,
-        statusText: "In progress",
-        message: "Start small and stay consistent. You are making progress.",
-        deposits: [
-            { date: "05 May 2026", note: "First saving", amount: 300 }
-        ]
+function restoreCachedExchangeRates() {
+    try {
+        const cached = JSON.parse(localStorage.getItem(EXCHANGE_RATE_CACHE_KEY) || "null");
+        if (!cached || !cached.rates || typeof cached.rates !== "object") return 0;
+        Object.keys(FALLBACK_EXCHANGE_RATES).forEach(code => {
+            const rate = Number(cached.rates[code]);
+            if (code === "GBP") exchangeRates.GBP = 1;
+            else if (Number.isFinite(rate) && rate > 0) exchangeRates[code] = rate;
+        });
+        return Number(cached.fetchedAt) || 0;
+    } catch (error) {
+        console.warn("Could not read cached exchange rates.", error);
+        return 0;
     }
-};
+}
+
+async function refreshExchangeRates() {
+    const cachedAt = restoreCachedExchangeRates();
+    if (cachedAt && Date.now() - cachedAt < EXCHANGE_RATE_CACHE_AGE) return;
+    try {
+        const response = await fetch("https://api.frankfurter.dev/v2/rates?base=GBP&quotes=USD,EUR,AED,CAD,AUD,INR,NGN,JPY");
+        if (!response.ok) throw new Error(`Exchange-rate request failed with HTTP ${response.status}`);
+        const rows = await response.json();
+        if (!Array.isArray(rows) || rows.length === 0) throw new Error("The exchange-rate service returned no rates.");
+        let updatedCount = 0;
+        rows.forEach(row => {
+            const rate = Number(row.rate);
+            if (row.base === "GBP" && Object.prototype.hasOwnProperty.call(FALLBACK_EXCHANGE_RATES, row.quote) && Number.isFinite(rate) && rate > 0) {
+                exchangeRates[row.quote] = rate;
+                updatedCount += 1;
+            }
+        });
+        if (!updatedCount) throw new Error("No supported exchange rates were returned.");
+        exchangeRates.GBP = 1;
+        localStorage.setItem(EXCHANGE_RATE_CACHE_KEY, JSON.stringify({
+            rates: exchangeRates,
+            date: rows.map(row => row.date).filter(Boolean).sort().pop() || null,
+            fetchedAt: Date.now()
+        }));
+        refreshCurrencyDisplays();
+    } catch (error) {
+        console.warn("Using fallback exchange rates because current rates could not be loaded.", error);
+    }
+}
+
+function getCurrentGoalFromLocation() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    if (id !== null) return goals.find(goal => String(goal.id) === id) || null;
+    const fundKey = document.body.dataset.fund;
+    if (!fundKey) return null;
+    const legacyNames = { emergency: "Emergency Fund", holiday: "Holiday Fund", "new-laptop": "New Laptop", "gaming-setup": "Gaming Setup" };
+    const expectedName = legacyNames[fundKey];
+    const normalizedKey = fundKey.toLowerCase();
+    return goals.find(goal => {
+        const slug = String(goal.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        return slug === normalizedKey || (expectedName && goal.name.toLowerCase() === expectedName.toLowerCase());
+    }) || null;
+}
 
 function renderFundDetailPage() {
-    const bodyFund = document.body.dataset.fund;
-    const config = fundDetails[bodyFund];
     const container = document.getElementById("fundDetailContent");
-
-    if (!container || !config) {
+    if (!container) return;
+    const goal = getCurrentGoalFromLocation();
+    if (!goal) {
+        container.innerHTML = `<div class="fund-detail-shell"><div class="fund-detail-card">
+            <h1>Goal not found</h1><p>This goal may have been deleted or the link may be outdated.</p>
+            <a class="page-action-btn" href="savings.html">Back to Savings</a>
+        </div></div>`;
+        refreshIcons();
         return;
     }
 
-    const remaining = Math.max(config.target - config.saved, 0);
-    const badge = config.completed
+    const saved = calculateGoalSavings(goal);
+    const target = Number(goal.targetAmount);
+    const remaining = calculateRemaining(goal);
+    const progress = calculateProgress(goal);
+    const completed = progress >= 100;
+    const deposits = [...(goal.deposits || [])].sort((first, second) => new Date(second.date) - new Date(first.date));
+    const badge = completed
         ? '<span class="fund-badge completed-badge"><i data-lucide="circle-check" aria-hidden="true"></i> Completed</span>'
-        : config.priority
+        : goal.priority
             ? '<span class="fund-badge priority-badge"><i data-lucide="star" aria-hidden="true"></i> Priority</span>'
             : '<span class="fund-badge in-progress-badge"><i data-lucide="clock-3" aria-hidden="true"></i> In progress</span>';
-
-    const depositRows = config.deposits.map(deposit => `
-        <div class="deposit-item">
-            <div>
-                <strong>${deposit.date}</strong>
-                <span>${deposit.note}</span>
-            </div>
-            <strong>${formatCurrency(deposit.amount)}</strong>
-        </div>
-    `).join("");
+    const depositRows = deposits.length ? deposits.map(deposit => `
+        <div class="deposit-item"><div><strong>${escapeHTML(formatDeadline(deposit.date))}</strong>
+        <span>${escapeHTML(deposit.note || "Deposit")}</span></div><strong>${formatCurrency(deposit.amount)}</strong></div>
+    `).join("") : '<p class="deposit-list-empty">No deposits yet.</p>';
+    const highestDeposit = Math.max(0, ...deposits.map(deposit => Number(deposit.amount) || 0));
 
     container.innerHTML = `
         <div class="fund-detail-shell">
-            <div class="fund-header-row">
-                <div>
-                    <span class="page-label">Savings Goal</span>
-                    <h1>${config.name}</h1>
-                    <p>Review your progress, track deposits, and manage this goal in one place.</p>
-                </div>
-                <button class="create-goal-btn back-to-savings-btn" type="button">
-                    <i data-lucide="arrow-left" aria-hidden="true"></i>
-                    Back to Savings
-                </button>
+            <div class="fund-header-row"><div><span class="page-label">Savings Goal</span>
+                <h1>${escapeHTML(goal.name)}</h1><p>Review your progress, track deposits, and manage this goal in one place.</p></div>
+                <button class="create-goal-btn back-to-savings-btn" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i> Back to Savings</button>
             </div>
-
             <article class="fund-detail-card">
-                <div class="fund-summary-row">
-                    <div class="fund-icon-wrap">
-                        <i data-lucide="${config.icon}" aria-hidden="true"></i>
-                    </div>
-                    <div class="fund-summary-copy">
-                        <div class="fund-title-row">
-                            <h2>${config.name}</h2>
-                            ${badge}
-                        </div>
-                        <p>${formatCurrency(config.saved)} saved of ${formatCurrency(config.target)}</p>
-                        <div class="goal-mini-progress">
-                            <div class="goal-mini-progress-bar">
-                                <div class="goal-mini-progress-fill ${config.completed ? "completed-fill" : ""}" style="width: ${config.progress}%"></div>
-                            </div>
-                            <span>${Math.round(config.progress)}%</span>
-                        </div>
+                <div class="fund-summary-row"><div class="fund-icon-wrap"><i data-lucide="${escapeHTML(goal.icon || "target")}" aria-hidden="true"></i></div>
+                    <div class="fund-summary-copy"><div class="fund-title-row"><h2>${escapeHTML(goal.name)}</h2>${badge}</div>
+                        <p>${formatCurrency(saved)} saved of ${formatCurrency(target)}</p>
+                        <div class="goal-mini-progress"><div class="goal-mini-progress-bar"><div class="goal-mini-progress-fill ${completed ? "completed-fill" : ""}" style="width: ${progress}%"></div></div><span>${Math.round(progress)}%</span></div>
                     </div>
                 </div>
-
-                <div class="goal-details-top">
-                    <div class="detail-card">
-                        <span>Amount saved</span>
-                        <strong>${formatCurrency(config.saved)}</strong>
-                    </div>
-                    <div class="detail-card">
-                        <span>Target amount</span>
-                        <strong>${formatCurrency(config.target)}</strong>
-                    </div>
-                    <div class="detail-card">
-                        <span>Remaining</span>
-                        <strong>${formatCurrency(remaining)}</strong>
-                    </div>
+                <div class="goal-details-top"><div class="detail-card"><span>Amount saved</span><strong>${formatCurrency(saved)}</strong></div>
+                    <div class="detail-card"><span>Target amount</span><strong>${formatCurrency(target)}</strong></div>
+                    <div class="detail-card"><span>Remaining</span><strong>${formatCurrency(remaining)}</strong></div>
                 </div>
-
-                <div class="full-progress-section">
-                    <div class="detail-heading-row">
-                        <h4>Goal Progress</h4>
-                        <strong>${Math.round(config.progress)}%</strong>
-                    </div>
-                    <div class="full-progress-bar">
-                        <div class="full-progress-fill ${config.completed ? "completed-fill" : ""}" style="width: ${config.progress}%"></div>
-                    </div>
+                <div class="full-progress-section"><div class="detail-heading-row"><h4>Goal Progress</h4><strong>${Math.round(progress)}%</strong></div>
+                    <div class="full-progress-bar"><div class="full-progress-fill ${completed ? "completed-fill" : ""}" style="width: ${progress}%"></div></div>
                 </div>
-
-                <div class="goal-information">
-                    <div>
-                        <span>${config.completed ? "Completed" : "Deadline"}</span>
-                        <strong>${config.completed ? config.deadline : config.deadline}</strong>
-                    </div>
-                    <div>
-                        <span>Total deposits</span>
-                        <strong>${config.totalDeposits}</strong>
-                    </div>
-                    <div>
-                        <span>Highest deposit</span>
-                        <strong>${formatCurrency(config.highestDeposit)}</strong>
-                    </div>
+                <div class="goal-information"><div><span>${completed ? "Completed" : "Deadline"}</span><strong>${escapeHTML(formatDeadline(goal.deadline))}</strong></div>
+                    <div><span>Total deposits</span><strong>${deposits.length}</strong></div>
+                    <div><span>Highest deposit</span><strong>${formatCurrency(highestDeposit)}</strong></div>
                 </div>
-
-                <div class="deposit-history">
-                    <div class="detail-heading-row">
-                        <h4>Deposit History</h4>
-                        <span>${config.totalDeposits} ${config.totalDeposits === 1 ? "deposit" : "deposits"}</span>
-                    </div>
-                    <div class="deposit-list">
-                        ${depositRows}
-                    </div>
-                </div>
-
-                <div class="goal-actions">
-                    <button class="deposit-now-btn" type="button">
-                        <i data-lucide="wallet" aria-hidden="true"></i>
-                        ${config.completed ? "Deposit More" : "Deposit Now"}
-                    </button>
-                    <button class="edit-goal-btn" type="button" data-page="edit-goal.html">
-                        <i data-lucide="pencil" aria-hidden="true"></i>
-                        Edit Goal
-                    </button>
-                </div>
-
-                <p class="goal-message">${config.message}</p>
+                <div class="deposit-history"><div class="detail-heading-row"><h4>Deposit History</h4><span>${deposits.length} ${deposits.length === 1 ? "deposit" : "deposits"}</span></div><div class="deposit-list">${depositRows}</div></div>
+                <div class="goal-actions"><button class="deposit-now-btn goal-detail-deposit-btn" type="button"><i data-lucide="wallet" aria-hidden="true"></i> Deposit Now</button>
+                    <button class="edit-goal-btn goal-detail-edit-btn" type="button"><i data-lucide="pencil" aria-hidden="true"></i> Edit Goal</button></div>
+                <p class="goal-message">${completed ? "Congratulations! You have reached this savings target." : "Every deposit brings you closer to your goal."}</p>
             </article>
-        </div>
-    `;
-
-    const backButton = document.querySelector(".back-to-savings-btn");
-    if (backButton) {
-        backButton.addEventListener("click", () => {
-            window.location.href = "savings.html";
-        });
-    }
-
-    const depositButton = document.querySelector(".deposit-now-btn");
-    if (depositButton) {
-        depositButton.addEventListener("click", () => {
-            alert(`Deposit feature for ${config.name} can be connected next.`);
-        });
-    }
-
-    const editButton = document.querySelector(".edit-goal-btn");
-    if (editButton) {
-        editButton.addEventListener("click", () => {
-            const fundKey = document.body.dataset.fund || "emergency";
-            window.location.href = `edit-goal.html?fund=${encodeURIComponent(fundKey)}`;
-        });
-    }
-
+        </div>`;
+    container.querySelector(".back-to-savings-btn")?.addEventListener("click", () => window.location.href = "savings.html");
+    container.querySelector(".goal-detail-deposit-btn")?.addEventListener("click", () => depositToGoal(goal));
+    container.querySelector(".goal-detail-edit-btn")?.addEventListener("click", () => editGoal(goal));
     refreshIcons();
 }
 
 function renderEditGoalPage() {
     const container = document.getElementById("editGoalContent");
-    if (!container) {
+    if (!container) return;
+    const params = new URLSearchParams(window.location.search);
+    let goal = getCurrentGoalFromLocation();
+    if (!goal && params.has("fund")) {
+        const aliases = { emergency: "Emergency Fund", holiday: "Holiday Fund", "new-laptop": "New Laptop", "gaming-setup": "Gaming Setup" };
+        const expectedName = aliases[params.get("fund")];
+        if (expectedName) goal = goals.find(item => item.name.toLowerCase() === expectedName.toLowerCase()) || null;
+    }
+    if (!goal) {
+        container.innerHTML = `<div class="fund-detail-shell"><div class="fund-detail-card">
+            <h1>Goal not found</h1><p>Choose a goal from your savings page before editing it.</p>
+            <a class="page-action-btn" href="savings.html">Back to Savings</a>
+        </div></div>`;
         return;
     }
 
-    const params = new URLSearchParams(window.location.search);
-    const fundKey = params.get("fund") || "emergency";
-    const config = fundDetails[fundKey] || fundDetails.emergency;
-
+    const displayTarget = Number(convertCurrency(goal.targetAmount).toFixed(2));
+    const deadline = /^\d{4}-\d{2}-\d{2}$/.test(goal.deadline || "") ? goal.deadline : "";
     container.innerHTML = `
         <div class="fund-detail-shell">
-            <div class="fund-header-row">
-                <div>
-                    <span class="page-label">Edit Goal</span>
-                    <h1>${config.name}</h1>
-                    <p>Update your target details and save the changes for this goal.</p>
-                </div>
-                <button class="create-goal-btn back-to-savings-btn" type="button">
-                    <i data-lucide="arrow-left" aria-hidden="true"></i>
-                    Back to Savings
-                </button>
+            <div class="fund-header-row"><div><span class="page-label">Edit Goal</span><h1>${escapeHTML(goal.name)}</h1><p>Update your target details and save the changes.</p></div>
+                <button class="create-goal-btn back-to-savings-btn" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i> Back to Savings</button>
             </div>
-
-            <article class="fund-detail-card form-card">
-                <form id="editGoalForm" class="goal-edit-form">
-                    <div class="form-grid">
-                        <label>
-                            <span>Goal name</span>
-                            <input type="text" name="goalName" value="${config.name}" required>
-                        </label>
-
-                        <label>
-                            <span>Target amount</span>
-                            <input type="number" name="goalTarget" value="${config.target}" min="1" step="0.01" required>
-                        </label>
-
-                        <label>
-                            <span>Deadline</span>
-                            <input type="date" name="goalDeadline" value="2026-12-31">
-                        </label>
-
-                        <label>
-                            <span>Priority goal</span>
-                            <select name="goalPriority">
-                                <option value="yes" ${config.priority ? "selected" : ""}>Yes</option>
-                                <option value="no" ${!config.priority ? "selected" : ""}>No</option>
-                            </select>
-                        </label>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="create-goal-btn">Save Changes</button>
-                        <button type="button" class="secondary-action edit-cancel-btn">Cancel</button>
-                    </div>
-                </form>
-            </article>
-        </div>
-    `;
+            <article class="fund-detail-card form-card"><form id="editGoalForm" class="goal-edit-form">
+                <div class="form-grid">
+                    <label><span>Goal name</span><input type="text" name="goalName" value="${escapeHTML(goal.name)}" maxlength="100" required></label>
+                    <label><span>Target amount (${escapeHTML(currentCurrency)})</span><input type="number" name="goalTarget" value="${displayTarget}" min="0.01" step="0.01" required></label>
+                    <label><span>Deadline</span><input type="date" name="goalDeadline" value="${deadline}"></label>
+                    <label><span>Priority goal</span><select name="goalPriority">
+                        <option value="yes" ${goal.priority ? "selected" : ""}>Yes</option>
+                        <option value="no" ${!goal.priority ? "selected" : ""}>No</option>
+                    </select></label>
+                </div>
+                <div class="form-actions"><button type="submit" class="save-goal-btn">Save Changes</button>
+                    <button type="button" class="secondary-action edit-cancel-btn">Cancel</button></div>
+            </form></article>
+        </div>`;
 
     const form = document.getElementById("editGoalForm");
-    if (form) {
-        form.addEventListener("submit", event => {
-            event.preventDefault();
-            const formData = new FormData(form);
-            const updatedName = formData.get("goalName").toString().trim();
-            const updatedTarget = Number(formData.get("goalTarget"));
-
-            if (!updatedName || !Number.isFinite(updatedTarget) || updatedTarget <= 0) {
-                alert("Please enter a valid goal name and target amount.");
-                return;
-            }
-
-            alert(`${updatedName} has been updated successfully.`);
-            window.location.href = "savings.html";
+    form?.addEventListener("submit", event => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const updatedName = String(formData.get("goalName") || "").trim();
+        const enteredTarget = Number(formData.get("goalTarget"));
+        if (!updatedName || !Number.isFinite(enteredTarget) || enteredTarget <= 0) {
+            alert("Please enter a valid goal name and target amount.");
+            return;
+        }
+        goal.name = updatedName;
+        goal.targetAmount = convertToBaseCurrency(enteredTarget);
+        goal.deadline = String(formData.get("goalDeadline") || "") || null;
+        const isPriority = formData.get("goalPriority") === "yes";
+        goal.priority = isPriority;
+        if (isPriority) goals.forEach(item => {
+            if (String(item.id) !== String(goal.id)) item.priority = false;
         });
-    }
-
-    const cancelButton = document.querySelector(".edit-cancel-btn");
-    if (cancelButton) {
-        cancelButton.addEventListener("click", () => {
-            window.location.href = "savings.html";
-        });
-    }
-
-    const backButton = document.querySelector(".back-to-savings-btn");
-    if (backButton) {
-        backButton.addEventListener("click", () => {
-            window.location.href = "savings.html";
-        });
-    }
-
+        saveGoalsToStorage();
+        window.location.href = getGoalPage(goal);
+    });
+    container.querySelector(".edit-cancel-btn")?.addEventListener("click", () => window.location.href = getGoalPage(goal));
+    container.querySelector(".back-to-savings-btn")?.addEventListener("click", () => window.location.href = "savings.html");
     refreshIcons();
 }
 
@@ -413,13 +295,19 @@ function loadGoals() {
     renderGoals();
     renderChart();
     updateChartCurrency();
+    if (document.body.dataset.fund || document.body.dataset.page === "goal-details") renderFundDetailPage();
+    if (document.body.dataset.page === "edit-goal") renderEditGoalPage();
 }
 
 // Convert GBP into selected currency
 function convertCurrency(amount) {
-    const rate = exchangeRates[currentCurrency] || 1;
-
+    const rate = Number(exchangeRates[currentCurrency]) || 1;
     return Number(amount) * rate;
+}
+
+function convertToBaseCurrency(amount) {
+    const rate = Number(exchangeRates[currentCurrency]) || 1;
+    return Number(amount) / rate;
 }
 
 // Format currency
@@ -434,32 +322,34 @@ function formatCurrency(amount) {
 // Change selected currency
 function changeCurrency() {
     const currencySelect = document.getElementById("currencySelect");
-
-    if (!currencySelect) {
-        return;
-    }
-
+    if (!currencySelect) return;
     currentCurrency = currencySelect.value;
-
     localStorage.setItem("currency", currentCurrency);
-
-    updateDashboard();
-    renderGoals();
-    renderChart();
-    updateChartCurrency();
+    refreshCurrencyDisplays();
+    if (document.body.dataset.page === "edit-goal") {
+        const goal = getCurrentGoalFromLocation();
+        const input = document.querySelector('#editGoalForm [name="goalTarget"]');
+        if (goal && input && document.activeElement !== input) input.value = Number(convertCurrency(goal.targetAmount).toFixed(2));
+    }
 }
 
 // Set saved currency
 function setupCurrencySelector() {
     const currencySelect = document.getElementById("currencySelect");
-
-    if (!currencySelect) {
-        return;
-    }
-
+    if (!currencySelect) return;
+    if (!Object.prototype.hasOwnProperty.call(FALLBACK_EXCHANGE_RATES, currentCurrency)) currentCurrency = "GBP";
     currencySelect.value = currentCurrency;
-
     currencySelect.addEventListener("change", changeCurrency);
+}
+
+function refreshCurrencyDisplays() {
+    updateDashboard();
+    renderGoals();
+    renderChart();
+    updateChartCurrency();
+    renderTransactions();
+    updateTransactionSummary();
+    if (document.body.dataset.fund || document.body.dataset.page === "goal-details") renderFundDetailPage();
 }
 
 // Calculate total savings
@@ -475,20 +365,13 @@ function calculateTotalSavings() {
 
 // Calculate savings for one goal
 function calculateGoalSavings(goal) {
-    let total = 0;
-
-    if (!goal.deposits) {
-        return total;
-    }
-
-    goal.deposits.forEach(deposit => {
-        total += Number(deposit.amount);
-    });
-
-    return total;
+    if (!Array.isArray(goal.deposits)) return 0;
+    return goal.deposits.reduce((total, deposit) => {
+        const amount = Number(deposit.amount);
+        return total + (Number.isFinite(amount) && amount > 0 ? amount : 0);
+    }, 0);
 }
 
-// Calculate remaining amount
 function calculateRemaining(goal) {
     const saved = calculateGoalSavings(goal);
     const target = Number(goal.targetAmount);
@@ -783,71 +666,49 @@ function createSavingsGoalCard(goal) {
 
 function createGoal() {
     const name = prompt("Enter the goal name:");
-    const target = prompt("Enter the target amount:");
+    const target = prompt(`Enter the target amount in ${currentCurrency}:`);
     const targetAmount = Number(target);
-
-    if (!name || !name.trim() || !Number.isFinite(targetAmount) || targetAmount <= 0) {
-        return;
-    }
+    if (!name || !name.trim() || !Number.isFinite(targetAmount) || targetAmount <= 0) return;
 
     goals.push({
         id: Date.now(),
         name: name.trim(),
-        targetAmount,
+        targetAmount: convertToBaseCurrency(targetAmount),
         deadline: null,
         priority: false,
         icon: "target",
         deposits: []
     });
     saveGoalsToStorage();
-    renderGoals();
-    updateDashboard();
+    loadGoals();
 }
 
 function getGoalPage(goal) {
-    if (!goal) {
-        return "emergency.html";
-    }
-
-    const name = String(goal.name || "").toLowerCase();
-
-    if (name.includes("holiday")) {
-        return "holiday.html";
-    }
-
-    if (name.includes("laptop")) {
-        return "new-laptop.html";
-    }
-
-    if (name.includes("gaming")) {
-        return "gaming-setup.html";
-    }
-
-    return "emergency.html";
+    return goal ? `goal-details.html?id=${encodeURIComponent(goal.id)}` : "savings.html";
 }
 
 function editGoal(goal) {
-    window.location.href = "transactions.html";
+    if (!goal) {
+        window.location.href = "savings.html";
+        return;
+    }
+    window.location.href = `edit-goal.html?id=${encodeURIComponent(goal.id)}`;
 }
 
 function depositToGoal(goal) {
-    const amount = Number(prompt(`Deposit amount for ${goal.name}:`));
+    if (!goal) return;
+    const amount = Number(prompt(`Deposit amount for ${goal.name} in ${currentCurrency}:`));
+    if (!Number.isFinite(amount) || amount <= 0) return;
 
-    if (!Number.isFinite(amount) || amount <= 0) {
-        return;
-    }
-
-    goal.deposits = goal.deposits || [];
+    goal.deposits = Array.isArray(goal.deposits) ? goal.deposits : [];
     goal.deposits.push({
         id: Date.now(),
-        amount,
+        amount: convertToBaseCurrency(amount),
         date: new Date().toISOString().slice(0, 10),
         note: "Deposit"
     });
     saveGoalsToStorage();
-    renderGoals();
-    updateDashboard();
-    renderChart();
+    loadGoals();
 }
 
 // Display goal cards
@@ -893,7 +754,7 @@ function renderGoals() {
 
         goalList.querySelectorAll(".deposit-now-btn").forEach(button => {
             button.addEventListener("click", () => {
-                const goal = goals.find(item => item.id === Number(button.dataset.goalId));
+                const goal = goals.find(item => String(item.id) === button.dataset.goalId);
                 if (goal) depositToGoal(goal);
             });
         });
@@ -902,16 +763,6 @@ function renderGoals() {
             button.addEventListener("click", () => {
                 const goal = goals.find(item => item.id === Number(button.dataset.goalId));
                 if (goal) editGoal(goal);
-            });
-        });
-
-        document.querySelectorAll(".edit-goal-btn").forEach(button => {
-            const goal = goals.find(item => item.id === Number(button.dataset.goalId));
-            const page = "transactions.html";
-            button.dataset.page = page;
-            button.addEventListener("click", event => {
-                event.preventDefault();
-                window.location.href = page;
             });
         });
 
@@ -1104,22 +955,25 @@ function escapeHTML(value) {
 
 const TRANSACTIONS_KEY = "saveflow-transactions";
 
-// Sample data shown until the user adds their own transactions
-const sampleTransactions = [
-  { id: 1, amount: 700.00, note: "Emergency Fund deposit", date: "2026-09-20" },
-  { id: 2, amount: 450.00, note: "New Laptop deposit", date: "2026-09-14" },
-  { id: 3, amount: 300.00, note: "Gaming Setup deposit", date: "2026-09-05" }
-];
-
-// Load transactions from localStorage (or use sample data)
+// Start with an empty history so demo records are not saved as real transactions.
 function loadTransactions() {
-  const saved = localStorage.getItem(TRANSACTIONS_KEY);
-  if (!saved) return sampleTransactions;
-  try {
-    return JSON.parse(saved);
-  } catch (error) {
-    return sampleTransactions;
-  }
+    const saved = localStorage.getItem(TRANSACTIONS_KEY);
+    if (saved === null) return [];
+    try {
+        const parsed = JSON.parse(saved);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter(transaction => transaction && typeof transaction === "object")
+            .map((transaction, index) => ({
+                id: transaction.id ?? Date.now() + index,
+                amount: Number(transaction.amount),
+                note: typeof transaction.note === "string" ? transaction.note : "No note",
+                date: typeof transaction.date === "string" ? transaction.date : ""
+            }))
+            .filter(transaction => Number.isFinite(transaction.amount) && transaction.amount >= 0);
+    } catch (error) {
+        console.warn("Saved transactions were invalid; showing an empty transaction list.", error);
+        return [];
+    }
 }
 
 let transactions = loadTransactions();
@@ -1127,13 +981,9 @@ let transactions = loadTransactions();
 function renderTransactions() {
     const transactionsList = document.getElementById("transactions");
     const totalAmountEl = document.getElementById("total-amount");
-
-    if (!transactionsList || !totalAmountEl) {
-        return;
-    }
+    if (!transactionsList || !totalAmountEl) return;
 
     transactionsList.innerHTML = "";
-
     if (transactions.length === 0) {
         const emptyItem = document.createElement("li");
         emptyItem.className = "transaction-empty-state";
@@ -1143,87 +993,65 @@ function renderTransactions() {
         return;
     }
 
-    transactions.forEach(function (transaction) {
+    transactions.forEach(transaction => {
         const listItem = document.createElement("li");
-
         const details = document.createElement("span");
         details.textContent = `${formatDate(transaction.date)} — ${transaction.note}`;
         const amountSpan = document.createElement("span");
-        amountSpan.textContent = `$${transaction.amount.toFixed(2)}`;
-
-        listItem.appendChild(details);
-        listItem.appendChild(amountSpan);
+        amountSpan.textContent = formatCurrency(Number(transaction.amount) || 0);
+        listItem.append(details, amountSpan);
         transactionsList.appendChild(listItem);
     });
-
     updateTotal();
 }
 
 function updateTotal() {
     const totalAmountEl = document.getElementById("total-amount");
-
-    if (!totalAmountEl) {
-        return;
-    }
-
-    const total = transactions.reduce(function (sum, transaction) {
-        return sum + transaction.amount;
-    }, 0);
-
-    totalAmountEl.textContent = `$${total.toFixed(2)}`;
+    if (!totalAmountEl) return;
+    const total = transactions.reduce((sum, transaction) => sum + (Number(transaction.amount) || 0), 0);
+    totalAmountEl.textContent = formatCurrency(total);
 }
 
 function formatDate(dateString) {
-    const options = { day: "numeric", month: "short", year: "numeric" };
-    return new Date(dateString).toLocaleDateString("en-GB", options);
+    const date = new Date(dateString);
+    if (!dateString || Number.isNaN(date.getTime())) return "Invalid date";
+    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
 function setupTransactionForm() {
     const form = document.getElementById("transaction-form");
     const errorMessage = document.getElementById("form-error");
+    if (!form || !errorMessage) return;
 
-    if (!form || !errorMessage) {
-        return;
-    }
-
-    form.addEventListener("submit", function (event) {
+    form.addEventListener("submit", event => {
         event.preventDefault();
-
         const amountInput = document.getElementById("amount");
         const noteInput = document.getElementById("note");
         const dateInput = document.getElementById("date");
-
-        const amount = amountInput.value;
+        const enteredAmount = Number(amountInput.value);
         const note = noteInput.value.trim();
         const date = dateInput.value;
 
-        if (!amount || isNaN(amount) || Number(amount) <= 0) {
+        if (!Number.isFinite(enteredAmount) || enteredAmount <= 0) {
             errorMessage.textContent = "Please enter a valid amount greater than 0.";
             return;
         }
-
         if (!date) {
             errorMessage.textContent = "Please select a date.";
             return;
         }
 
         errorMessage.textContent = "";
-
-        const newTransaction = {
+        transactions.push({
             id: Date.now(),
-            amount: Number(amount),
+            amount: convertToBaseCurrency(enteredAmount),
             note: note || "No note",
-            date: date
-        };
-
-        transactions.push(newTransaction);
+            date
+        });
         localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(transactions));
         window.location.href = "transactions.html";
     });
-
-    renderTransactions();
 }
-
 // ===== Account page (Elina) =====
 
 // Load and save the user's profile (name, email) using localStorage
@@ -1298,29 +1126,18 @@ function updateTransactionSummary() {
     const countEl = document.getElementById("summaryTransactionCount");
     const totalEl = document.getElementById("summaryTransactionTotal");
     const latestEl = document.getElementById("summaryLatestTransaction");
+    if (!countEl || !totalEl || !latestEl) return;
 
-    if (!countEl || !totalEl || !latestEl) {
-        return;
-    }
-
-    const total = transactions.reduce(function (sum, transaction) {
-        return sum + transaction.amount;
-    }, 0);
-
+    const total = transactions.reduce((sum, transaction) => sum + (Number(transaction.amount) || 0), 0);
     countEl.textContent = transactions.length;
-    totalEl.textContent = `$${total.toFixed(2)}`;
+    totalEl.textContent = formatCurrency(total);
 
     if (transactions.length === 0) {
         latestEl.textContent = "None yet";
         return;
     }
-
-    // Find the transaction with the newest date
-    const latest = [...transactions].sort(function (a, b) {
-        return new Date(b.date) - new Date(a.date);
-    })[0];
-
-    latestEl.textContent = `${latest.note} — $${latest.amount.toFixed(2)}`;
+    const latest = [...transactions].sort((first, second) => new Date(second.date) - new Date(first.date))[0];
+    latestEl.textContent = `${latest.note} — ${formatCurrency(Number(latest.amount) || 0)}`;
 }
 
 // Hide loading screen
@@ -1336,35 +1153,17 @@ function hideLoadingScreen() {
 
 // Start SaveFlow
 document.addEventListener("DOMContentLoaded", () => {
-    if (document.body.dataset.fund) {
-        renderFundDetailPage();
-    }
-
-    if (document.body.dataset.page === "edit-goal") {
-        renderEditGoalPage();
-    }
-
+    restoreCachedExchangeRates();
     setupCurrencySelector();
     setupFilters();
     setupSorting();
 
     refreshIcons();
 
-    document.querySelectorAll(".create-goal-btn").forEach(button => {
+    document.querySelectorAll(".create-goal-btn:not(.back-to-savings-btn):not(.save-goal-btn)").forEach(button => {
         button.addEventListener("click", event => {
             event.preventDefault();
             createGoal();
-        });
-    });
-
-    document.querySelectorAll(".edit-goal-btn").forEach(button => {
-        const goalId = button.dataset.goalId ? Number(button.dataset.goalId) : null;
-        const goal = goalId ? goals.find(item => item.id === goalId) : null;
-        const page = button.dataset.page || getGoalPage(goal);
-        button.dataset.page = page;
-        button.addEventListener("click", event => {
-            event.preventDefault();
-            window.location.href = page;
         });
     });
 
@@ -1387,6 +1186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateNavAccountName();
     updateTransactionSummary();
     loadGoalsFromJSON();
+    refreshExchangeRates();
 
     // Add a short loading delay
     setTimeout(() => {
