@@ -851,38 +851,24 @@ function setupSorting() {
 // Calculate monthly deposits
 function calculateMonthlyDeposits() {
     const monthlyTotals = {
-        Jan: 0,
-        Feb: 0,
-        Mar: 0,
-        Apr: 0,
-        May: 0,
-        Jun: 0,
-        Jul: 0,
-        Aug: 0,
-        Sep: 0,
-        Oct: 0,
-        Nov: 0,
-        Dec: 0
+        Jan: 0, Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0,
+        Jul: 0, Aug: 0, Sep: 0, Oct: 0, Nov: 0, Dec: 0
     };
+    const reportingYear = new Date().getFullYear();
 
     goals.forEach(goal => {
-        if (!goal.deposits) {
-            return;
-        }
+        if (!Array.isArray(goal.deposits)) return;
 
         goal.deposits.forEach(deposit => {
             const date = new Date(deposit.date);
-
-            if (isNaN(date.getTime())) {
+            const amount = Number(deposit.amount);
+            if (Number.isNaN(date.getTime()) || date.getFullYear() !== reportingYear || !Number.isFinite(amount)) {
                 return;
             }
 
-            const month = date.toLocaleDateString("en-US", {
-                month: "short"
-            });
-
-            if (monthlyTotals[month] !== undefined) {
-                monthlyTotals[month] += Number(deposit.amount);
+            const month = date.toLocaleDateString("en-US", { month: "short" });
+            if (Object.prototype.hasOwnProperty.call(monthlyTotals, month)) {
+                monthlyTotals[month] += amount;
             }
         });
     });
@@ -891,36 +877,33 @@ function calculateMonthlyDeposits() {
 }
 
 // Render monthly deposit chart
+function getChartScale() {
+    const values = Object.values(calculateMonthlyDeposits());
+    const maximum = Math.max(...values, 1);
+    return Math.max(2000, Math.ceil(maximum / 500) * 500);
+}
+
 function renderChart() {
     const chart = document.getElementById("monthlyChart");
-
-    if (!chart) {
-        return;
-    }
+    if (!chart) return;
 
     const monthlyTotals = calculateMonthlyDeposits();
-    const values = Object.values(monthlyTotals);
-    const maxValue = Math.max(...values, 2000);
-
+    const maxValue = getChartScale();
     chart.innerHTML = "";
 
     Object.entries(monthlyTotals).forEach(([month, amount]) => {
-        const height = (amount / maxValue) * 100;
-
+        const height = Math.min(100, Math.max(0, (amount / maxValue) * 100));
         const column = document.createElement("div");
-
         column.className = "bar-column";
 
-        column.innerHTML = `
-            <div
-                class="bar"
-                style="height: ${height}%"
-                title="${month}: ${formatCurrency(amount)}">
-            </div>
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = `${height}%`;
+        bar.title = `${month}: ${formatCurrency(amount)}`;
 
-            <span>${month}</span>
-        `;
-
+        const label = document.createElement("span");
+        label.textContent = month;
+        column.append(bar, label);
         chart.appendChild(column);
     });
 }
@@ -928,17 +911,15 @@ function renderChart() {
 // Update chart currency labels
 function updateChartCurrency() {
     const chartYAxis = document.querySelector(".chart-y-axis");
-
-    if (!chartYAxis) {
-        return;
-    }
+    if (!chartYAxis) return;
 
     const labels = chartYAxis.querySelectorAll("span");
-
-    const values = [2000, 1500, 1000, 500, 0];
+    const maxValue = getChartScale();
+    const divisions = labels.length > 1 ? labels.length - 1 : 1;
 
     labels.forEach((label, index) => {
-        label.textContent = formatCurrency(values[index]);
+        const value = maxValue - (maxValue / divisions) * index;
+        label.textContent = formatCurrency(value);
     });
 }
 
